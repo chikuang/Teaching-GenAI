@@ -1,4 +1,6 @@
 .venv/
+_build/
+docs/notebooks/
 .quarto/
 _book/
 _freeze/

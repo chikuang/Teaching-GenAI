@@ -1,12 +1,17 @@
 ---
-jupyter: python3
+file_format: mystnb
+kernelspec:
+  name: python3
+  display_name: Python 3
+  language: python
 ---
 
-# First Python lab: probabilities to generation {.unnumbered}
+
+# First Python lab: probabilities to generation
 
 This small experiment connects a familiar categorical model to the sampling step used in language generation. It runs on a CPU with NumPy and Matplotlib, with no model download or API account.
 
-[Download the Jupyter notebook](notebooks/01-python-lab.ipynb){.btn .btn-outline-primary}
+<a href="notebooks/01-python-lab.ipynb" download>Download the Jupyter notebook</a>
 
 The web page displays results computed by Python when the course is built. To edit and run the cells yourself, open the downloaded notebook in JupyterLab or VS Code; the static web page does not run a Python kernel.
 
@@ -14,7 +19,7 @@ The web page displays results computed by Python when the course is built. To ed
 
 Suppose a toy model predicts the next token from a vocabulary of three words. These probabilities are supplied for illustration; we have not trained a language model.
 
-```{python}
+```{code-cell} python
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -36,7 +41,7 @@ $$
 
 Here the observations are token indices. The array `p[observed]` looks up the predicted probability of each observed token.
 
-```{python}
+```{code-cell} python
 observed = np.array([0, 0, 1, 0, 2, 1])
 model_loss = -np.log(p[observed]).mean()
 uniform = np.full(3, 1 / 3)
@@ -57,7 +62,7 @@ $$
 
 Taking $z_j=\log p_j$ recovers the original distribution at $T=1$. Lower temperatures concentrate probability on higher-scoring tokens. Higher temperatures move this finite-vocabulary distribution toward uniformity. Neither operation establishes that a generated statement is true.
 
-```{python}
+```{code-cell} python
 def softmax(logits, temperature=1.0):
     if temperature <= 0:
         raise ValueError("Temperature must be positive.")
@@ -76,16 +81,11 @@ for t, row in zip(temperatures, probabilities):
 
 Subtracting the maximum before exponentiation leaves softmax unchanged and reduces overflow risk. A function is defined with `def`; indentation defines its body. The list comprehension computes one row for each temperature, and `np.vstack` combines the rows into a matrix.
 
-```{python}
-#| label: fig-temperature
-#| fig-cap: "Temperature changes the sampling distribution of the toy model."
-#| fig-alt: "Grouped bars for three tokens: at low temperature the most probable token dominates; at high temperature the distribution is flatter."
-#| fig-width: 8
-#| fig-height: 4.2
+```{code-cell} python
 fig, ax = plt.subplots(layout="constrained")
 x = np.arange(len(tokens))
 width = 0.24
-colors = ["#203f68", "#c88a30", "#728aa5"]
+colors = ["#111111", "#FED34C", "#A2006E"]
 for i, (t, row, color) in enumerate(zip(temperatures, probabilities, colors)):
     ax.bar(x + (i - 1) * width, row, width, label=f"T = {t}", color=color)
 ax.set_xticks(x, tokens)
@@ -98,7 +98,7 @@ plt.show()
 
 ## 4 · Generate and inspect a Monte Carlo sample
 
-```{python}
+```{code-cell} python
 rng = np.random.default_rng(8670)
 draws = rng.choice(len(tokens), size=10_000, p=softmax(logits, 1.0))
 frequencies = np.bincount(draws, minlength=len(tokens)) / len(draws)
@@ -118,4 +118,4 @@ A fixed seed makes this example reproducible within the recorded environment. Sa
 
 ## Bridge to attention
 
-Softmax will return in attention, where it normalizes similarity scores into weights over available positions. The normalization is the same mathematical operation, but its role differs: attention weights combine value vectors, whereas the probabilities above sample an output token. The [statistical lens](statistical-lens.qmd) introduces the attention equation.
+Softmax will return in attention, where it normalizes similarity scores into weights over available positions. The normalization is the same mathematical operation, but its role differs: attention weights combine value vectors, whereas the probabilities above sample an output token. The [statistical lens](statistical-lens.md) introduces the attention equation.

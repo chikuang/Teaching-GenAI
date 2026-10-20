@@ -1,4 +1,4 @@
-# Reading guide {.unnumbered}
+# Reading guide
 
 Start with the introductory resources. Read foundational papers after working through the corresponding small example. This is a selected learning path, not an exhaustive survey or a claim about the newest model.
 
@@ -9,7 +9,7 @@ Start with the introductory resources. Read foundational papers after working th
 | [Dive into Deep Learning](https://d2l.ai/) | Modules 2–5 | Work through arrays, autodiff, multilayer perceptrons, attention, and transformers; skip familiar mathematical preliminaries as needed. |
 | [PyTorch: Learn the Basics](https://docs.pytorch.org/tutorials/beginner/basics/intro.html) | Module 2 onward | Learn tensors, datasets, model definitions, gradients, and the training loop. |
 | [Hugging Face LLM Course](https://huggingface.co/learn/llm-course/chapter1/1) | Modules 3, 5, 6, and 9 | Connect tokenization and transformer concepts to practical model tooling. |
-| [Quarto: Using Python](https://quarto.org/docs/computations/python.html) | Throughout | Write executable teaching notes and render notebooks. |
+| [MyST-NB](https://myst-nb.readthedocs.io/en/latest/) and [Sphinx](https://www.sphinx-doc.org/) | Throughout | Write and build executable teaching notes with Python. |
 
 ## Foundational papers by module
 

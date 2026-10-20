@@ -1,4 +1,4 @@
-# The statistical lens {.unnumbered}
+# The statistical lens
 
 For each new idea, ask: **What are the observations? What is random? What is the target? What is being optimized? What assumptions justify the evaluation?** The connections below are learning aids; their limits matter as much as their similarities.
 

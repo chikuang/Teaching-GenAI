@@ -1,4 +1,9 @@
-# The first lab runs on a CPU with no API key.
+# Python builds the site and executes the CPU-only introductory lessons.
+sphinx>=8.2,<9
+myst-nb>=1.4,<2
+sphinx-book-theme>=1.4,<2
+sphinx-copybutton>=0.5,<1
+sphinx-design>=0.6,<1
 numpy>=2.0,<3
 matplotlib>=3.9,<4
 jupyterlab>=4,<5

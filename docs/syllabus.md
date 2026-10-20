@@ -1,8 +1,5 @@
----
-tbl-colwidths: [8, 32, 28, 32]
----
 
-# Course outline {.unnumbered}
+# Course outline
 
 **Topic Course: Generative AI through the lens of statisticians**
 
@@ -12,33 +9,35 @@ This sequence assumes a strong statistics background and begins at an introducto
 
 | Module | Topic | Statistical connection | Evidence of learning |
 |:--|:--|:--|:--|
-| 1 | [Generative AI as probabilistic modeling](#module-01) | Density estimation, likelihood, risk | Derive and sample a tiny language model |
-| 2 | [Python and neural network foundations](#module-02) | GLMs, optimization, regularization | Fit a small neural predictor |
-| 3 | [Tokens and embeddings](#module-03) | Feature maps, dimension reduction | Compare two text representations |
-| 4 | [Attention from first principles](#module-04) | Adaptive weighted averages | Implement and inspect attention |
-| 5 | [The transformer](#module-05) | Compositional representations | Trace a decoder block |
-| 6 | [Training and using language models](#module-06) | Conditional likelihood, sampling | Compare decoding rules |
-| 7 | [Latent-variable generative models](#module-07) | Variational inference, change of variables | Derive an ELBO and simulate |
-| 8 | [Diffusion and score-based modeling](#module-08) | Denoising, stochastic processes | Run a toy noise/recovery experiment |
-| 9 | [Adaptation and alignment](#module-09) | Low-rank constraints, paired comparisons | Compare adaptation strategies |
-| 10 | [Retrieval-augmented generation](#module-10) | Conditional prediction, selection | Build and inspect a small RAG pipeline |
-| 11 | [Evaluation and uncertainty](#module-11) | Experimental design, calibration | Produce an evaluation report |
-| 12 | [Agents and tool use](#module-12) | Sequential decisions, stopping | Build a bounded single agent |
-| 13 | [Reliable agent experiments](#module-13) | Dependence, ablations, reliability | Compare agent and workflow baselines |
-| 14 | [A statistician's GenAI project](#module-14) | Reproducible empirical research | Deliver a small teaching or research system |
+| 1 | [Generative AI as probabilistic modeling](chapters/01-probability-to-genai.md) | Density estimation, likelihood, risk | Derive and sample a tiny language model |
+| 2 | [Python and neural network foundations](chapters/02-python-neural-networks.md) | GLMs, optimization, regularization | Fit a small neural predictor |
+| 3 | [Tokens and embeddings](chapters/03-tokens-embeddings.md) | Feature maps, dimension reduction | Compare two text representations |
+| 4 | [Attention from first principles](chapters/04-attention.md) | Adaptive weighted averages | Implement and inspect attention |
+| 5 | [The transformer](chapters/05-transformers.md) | Compositional representations | Trace a decoder block |
+| 6 | [Training and using language models](chapters/06-language-models.md) | Conditional likelihood, sampling | Compare decoding rules |
+| 7 | [Latent-variable generative models](chapters/07-latent-variable-models.md) | Variational inference, change of variables | Derive an ELBO and simulate |
+| 8 | [Diffusion and score-based modeling](chapters/08-diffusion.md) | Denoising, stochastic processes | Run a toy noise/recovery experiment |
+| 9 | [Adaptation and alignment](chapters/09-adaptation-alignment.md) | Low-rank constraints, paired comparisons | Compare adaptation strategies |
+| 10 | [Retrieval-augmented generation](chapters/10-rag.md) | Conditional prediction, selection | Build and inspect a small RAG pipeline |
+| 11 | [Evaluation and uncertainty](chapters/11-evaluation-uncertainty.md) | Experimental design, calibration | Produce an evaluation report |
+| 12 | [Agents and tool use](chapters/12-agents.md) | Sequential decisions, stopping | Build a bounded single agent |
+| 13 | [Reliable agent experiments](chapters/13-agent-reliability.md) | Dependence, ablations, reliability | Compare agent and workflow baselines |
+| 14 | [A statistician's GenAI project](chapters/14-capstone.md) | Reproducible empirical research | Deliver a small teaching or research system |
 
 ## Part I · From statistical learning to attention
 
-### 1 · Generative AI as probabilistic modeling {#module-01}
+(module-01)=
+### 1 · Generative AI as probabilistic modeling
 
 **Question.** What does a generative model learn, and what does it mean to generate a new observation?
 
 - **Learn:** distinguish joint, conditional, and discriminative models; use the chain rule to factor a text distribution; connect cross-entropy to negative log likelihood.
 - **Statistical lens:** density estimation, empirical risk, smoothing, and held-out log loss.
-- **Python practice:** estimate a tiny categorical or bigram model, sample sequences, and compare training and held-out loss. The [first lab](01-python-lab.qmd) starts with the categorical case.
+- **Python practice:** estimate a tiny categorical or bigram model, sample sequences, and compare training and held-out loss. [Chapter 1](chapters/01-probability-to-genai.md) develops the full example, including a bigram language model.
 - **Self-check:** explain why fluent sampled text need not be factually correct, and why zero-probability events cause problems for log loss.
 
-### 2 · Python and neural network foundations {#module-02}
+(module-02)=
+### 2 · Python and neural network foundations
 
 **Question.** What changes when a regression model learns its own nonlinear features?
 
@@ -47,7 +46,8 @@ This sequence assumes a strong statistics background and begins at an introducto
 - **Python practice:** fit logistic regression and a small multilayer perceptron to the same simulated problem; record train/validation curves and compare against a simple baseline.
 - **Self-check:** distinguish the model, loss, optimizer, and data split; check a derivative numerically before trusting autodiff.
 
-### 3 · Tokens, embeddings, and representations {#module-03}
+(module-03)=
+### 3 · Tokens, embeddings, and representations
 
 **Question.** How does text become something a numerical model can use?
 
@@ -56,7 +56,8 @@ This sequence assumes a strong statistics background and begins at an introducto
 - **Python practice:** tokenize a small public text collection and compare bag-of-words with embedding-based similarity. Inspect examples where similarity is misleading.
 - **Self-check:** explain why a token is not necessarily a word and why a two-dimensional embedding plot is not evidence of causal structure.
 
-### 4 · Attention from first principles {#module-04}
+(module-04)=
+### 4 · Attention from first principles
 
 **Question.** How can a representation select and combine information relevant to a query?
 
@@ -68,7 +69,8 @@ This sequence assumes a strong statistics background and begins at an introducto
 
 ## Part II · Transformers and generative models
 
-### 5 · Assembling the transformer {#module-05}
+(module-05)=
+### 5 · Assembling the transformer
 
 **Question.** How does one attention calculation become a sequence model?
 
@@ -77,7 +79,8 @@ This sequence assumes a strong statistics background and begins at an introducto
 - **Python practice:** implement a tiny decoder block in PyTorch; track every tensor's dimensions and use a causal-mask check to show future tokens cannot influence earlier outputs.
 - **Self-check:** draw the route from token IDs to next-token probabilities, and distinguish the original encoder-decoder transformer from a decoder-only language model.
 
-### 6 · Language model training, prompting, and decoding {#module-06}
+(module-06)=
+### 6 · Language model training, prompting, and decoding
 
 **Question.** What is learned in the weights, and what changes when we provide a prompt?
 
@@ -86,7 +89,8 @@ This sequence assumes a strong statistics background and begins at an introducto
 - **Python practice:** train a very small character model or use a small pretrained model; vary one decoding choice at a time on fixed prompts and repeat runs.
 - **Self-check:** explain why perplexity is not a universal measure of usefulness and why prompting is not parameter estimation by gradient descent at inference time.
 
-### 7 · Latent variables, VAEs, GANs, and flows {#module-07}
+(module-07)=
+### 7 · Latent variables, VAEs, GANs, and flows
 
 **Question.** What alternatives to sequential factorization can represent a complex distribution?
 
@@ -96,7 +100,8 @@ This sequence assumes a strong statistics background and begins at an introducto
 - **Self-check:** separate the latent prior, approximate posterior, and observation model; explain why matching a few summary statistics cannot establish distributional equivalence.
 - **Reading:** [Auto-Encoding Variational Bayes](https://arxiv.org/abs/1312.6114).
 
-### 8 · Diffusion and score-based generation {#module-08}
+(module-08)=
+### 8 · Diffusion and score-based generation
 
 **Question.** How can learning to remove noise support generation from noise?
 
@@ -106,7 +111,8 @@ This sequence assumes a strong statistics background and begins at an introducto
 - **Self-check:** distinguish the known forward process from the fitted reverse process and separate training from sampling.
 - **Reading:** [Denoising Diffusion Probabilistic Models](https://arxiv.org/abs/2006.11239). Continuous-time formulations are an optional extension.
 
-### 9 · Fine-tuning, LoRA, and preference learning {#module-09}
+(module-09)=
+### 9 · Fine-tuning, LoRA, and preference learning
 
 **Question.** How do we adapt an existing model, and whose preferences are represented?
 
@@ -118,7 +124,8 @@ This sequence assumes a strong statistics background and begins at an introducto
 
 ## Part III · Reliable systems and agents
 
-### 10 · Retrieval-augmented generation (RAG) {#module-10}
+(module-10)=
+### 10 · Retrieval-augmented generation (RAG)
 
 **Question.** How can a model answer using a specified collection of documents?
 
@@ -128,7 +135,8 @@ This sequence assumes a strong statistics background and begins at an introducto
 - **Self-check:** identify whether an error arose in retrieval, evidence selection, or generation. A citation does not by itself show that its source supports the claim.
 - **Reading:** [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401).
 
-### 11 · Evaluation, calibration, and uncertainty {#module-11}
+(module-11)=
+### 11 · Evaluation, calibration, and uncertainty
 
 **Question.** What evidence would justify saying one system is better than another?
 
@@ -138,7 +146,8 @@ This sequence assumes a strong statistics background and begins at an introducto
 - **Self-check:** distinguish token probabilities, answer confidence, and factual correctness; state the population to which a reported interval applies.
 - **Reading:** [A Gentle Introduction to Conformal Prediction](https://arxiv.org/abs/2107.07511).
 
-### 12 · Agents: tools, state, and decisions {#module-12}
+(module-12)=
+### 12 · Agents: tools, state, and decisions
 
 **Question.** What makes a system an agent, beyond producing a text response?
 
@@ -148,7 +157,8 @@ This sequence assumes a strong statistics background and begins at an introducto
 - **Self-check:** explain when a fixed Python function or workflow is sufficient and why tool access does not imply reliable tool use.
 - **Reading:** [ReAct](https://arxiv.org/abs/2210.03629); study observable actions and results without treating generated reasoning text as a faithful record of internal computation.
 
-### 13 · Agent reliability and experimental design {#module-13}
+(module-13)=
+### 13 · Agent reliability and experimental design
 
 **Question.** Does an agent improve outcomes enough to justify its additional complexity?
 
@@ -157,11 +167,12 @@ This sequence assumes a strong statistics background and begins at an introducto
 - **Python practice:** compare a direct model call, a fixed workflow, and the agent on the same task set and budget. Inject harmless tool failures; log recovery, loop counts, and stopping behavior. Treat external documents as data rather than tool instructions.
 - **Self-check:** separate task failure, tool failure, unsupported answers, and budget exhaustion. Add multiple agents only as an optional ablation after establishing a single-agent baseline.
 
-### 14 · Capstone: a GenAI system for a statistician {#module-14}
+(module-14)=
+### 14 · Capstone: a GenAI system for a statistician
 
 Choose one modest project: a citation-grounded assistant for public statistical notes, a teaching assistant that explains simulation results, or a tool-using simulation planner with a constrained action space.
 
-Produce a **reproducible Python notebook and a short Quarto chapter** containing:
+Produce a **reproducible Python notebook and a short MyST chapter** containing:
 
 1. A target user, task population, loss, and explicit scope.
 2. A simple baseline and one justified extension, such as RAG or tool use.

@@ -4,60 +4,62 @@
 Chi-Kuang Yeh · Independent study · Python
 
 - [Course website](https://chikuang.github.io/teaching/genai/)
-- [Course outline](https://chikuang.github.io/teaching/genai/syllabus.html)
-- [Python authoring guide](https://chikuang.github.io/teaching/genai/python-workflow.html)
-- [First executable Python lab](https://chikuang.github.io/teaching/genai/01-python-lab.html)
+- [Complete Chapter 1](https://chikuang.github.io/teaching/genai/chapters/01-probability-to-genai.html)
+- [14-chapter outline](https://chikuang.github.io/teaching/genai/syllabus.html)
+- [Python setup and authoring guide](https://chikuang.github.io/teaching/genai/python-workflow.html)
+- [Executed Chapter 1 notebook](https://chikuang.github.io/teaching/genai/notebooks/01-probability-to-genai.ipynb)
 
 A self-paced course for a statistician with a PhD-level background in statistical
-machine learning who is beginning to learn attention, transformers, generative
-models, and agents. The initial release contains a 14-module outline, a
-statistical translation guide, selected readings, a Python publishing guide,
-and one executable introductory lab. Full module lectures are planned work.
+machine learning who is beginning to learn Python, attention, generative models,
+and agents. Chapter 1 is a complete lesson with step-by-step code, mathematical
+derivations, executed figures, eight exercises, and worked solutions. Chapters
+2–14 have individual outline pages; their full lessons are planned work.
 
-## Structure
+## Python builds the whole website
 
-This is a Quarto book, matching the structure of the existing statistics
-courses, with a navy-and-amber theme. Python runs through Jupyter. The `.qmd`
-files are canonical sources; `notebooks/01-python-lab.ipynb` is an exported
-practice copy of the first lab.
+The site uses **Sphinx + MyST-NB + sphinx-book-theme**, with Waterloo black/yellow
+and Faculty of Mathematics pink accents. `docs/` contains the canonical sources;
+Python cells are executed during rendering. Quarto and Node.js are not required
+to build the site. The earlier Quarto version is preserved in Git history.
 
-## Local development
-
-Install Python 3.12 and Quarto (initial build: Quarto 1.10.18).
+Use Python 3.12. On macOS/Linux:
 
 ```bash
-python3 -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-export QUARTO_PYTHON="$PWD/.venv/bin/python"
-quarto check jupyter
-quarto preview
+python scripts/build.py
+python -m http.server 8767 --directory _build/html
 ```
 
-Windows: use `py -m venv .venv` and `.venv\Scripts\Activate.ps1`; set
-`$env:QUARTO_PYTHON = "$PWD\.venv\Scripts\python.exe"` in PowerShell if needed.
-The requirements lock records the initial macOS/Python 3.12 environment and may
-need platform-specific adjustment on other operating systems.
+Open `http://localhost:8767`. Windows users can create the environment with
+`py -3.12 -m venv .venv` and activate it with `.venv\Scripts\Activate.ps1`.
+`requirements-lock.txt` records the tested macOS/Python 3.12 environment and may
+need platform-specific adjustment elsewhere.
 
-## Build and refresh the notebook
+The build fails on notebook errors or Sphinx warnings and writes `_build/html/`.
+Executed notebooks are exported to its `notebooks/` directory. The first chapter
+requires no GPU, API key, or model download. To experiment locally, open a
+downloaded notebook with `python -m jupyterlab`.
 
-```bash
-quarto convert 01-python-lab.qmd --output notebooks/01-python-lab.ipynb
-quarto render
-```
+## Authoring
 
-The build executes Python cells and writes the website to `_book/`.
-The course requires no R packages, API key, GPU, or model download for this lab.
-PyTorch and model-specific dependencies will be introduced with later labs.
+- `docs/chapters/*.md`: lessons, with MyST notebook metadata for executable pages.
+- `docs/index.md`: homepage and chapter navigation.
+- `docs/conf.py`: Python site configuration.
+- `docs/_static/waterloo.css`: course styling.
+- `scripts/build.py`: execute, render, validate notebook outputs, and export.
+
+New executable MyST lessons are discovered automatically by the build script.
+Add their paths to the homepage's toctree to include them in the sidebar.
 
 ## Publication
 
 The public website is maintained in `chikuang/chikuang.github.io` on `master`.
-After a successful render and preview, copy the **contents** of `_book/` into
-that checkout's `teaching/genai/`, review the changes, and commit/push both the
-course source and the published output. Do not replace the website repository
-or other teaching directories. The Teaching entry is maintained in
-`chikuang/website` (`config.toml` and its teaching section partial).
+After a successful build and preview, copy the **contents** of `_build/html/`
+into that checkout's `teaching/genai/`, review the changes, and commit/push both
+the course source and published output. Do not replace other website directories.
+The Teaching entry is maintained in `chikuang/website`.
 
-The course repository's build workflow validates the HTML and saves a build
-artifact; it does not automatically publish into the separate website repository.
+The GitHub Actions workflow validates the HTML build and saves a build artifact;
+it does not publish automatically into the separate website repository.
