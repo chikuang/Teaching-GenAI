@@ -1,4 +1,4 @@
-# Teaching-GenAI
+# STAT XXXX Generate AI
 
 **Topic Course · Generative AI through the lens of statisticians**  
 Chi-Kuang Yeh · Independent study · Python
@@ -17,8 +17,8 @@ derivations, executed figures, eight exercises, and worked solutions. Chapters
 
 ## Python builds the whole website
 
-The site uses **Sphinx + MyST-NB + sphinx-book-theme**, with Waterloo black/yellow
-and Faculty of Mathematics pink accents. `docs/` contains the canonical sources;
+The site uses **Sphinx + MyST-NB + sphinx-book-theme**, with white backgrounds,
+readable system fonts, Waterloo yellow, and Mathematics pink accents. `docs/` contains the canonical sources;
 Python cells are executed during rendering. Quarto and Node.js are not required
 to build the site. The earlier Quarto version is preserved in Git history.
 
@@ -47,7 +47,7 @@ downloaded notebook with `python -m jupyterlab`.
 - `docs/chapters/*.md`: lessons, with MyST notebook metadata for executable pages.
 - `docs/index.md`: homepage and chapter navigation.
 - `docs/conf.py`: Python site configuration.
-- `docs/_static/waterloo.css`: course styling.
+- `docs/_static/course.css`: course styling.
 - `scripts/build.py`: execute, render, validate notebook outputs, and export.
 
 New executable MyST lessons are discovered automatically by the build script.

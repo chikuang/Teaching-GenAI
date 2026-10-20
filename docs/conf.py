@@ -1,5 +1,5 @@
 """Python configuration for the Teaching-GenAI course book."""
-project = "Teaching-GenAI"
+project = "STAT XXXX Generate AI"
 author = "Chi-Kuang Yeh"
 copyright = "2026, Chi-Kuang Yeh"
 extensions = ["myst_nb", "sphinx_copybutton", "sphinx_design"]
@@ -14,15 +14,17 @@ nb_execution_raise_on_error = True
 nb_execution_show_tb = True
 nb_execution_in_temp = True
 html_theme = "sphinx_book_theme"
-html_title = "Teaching-GenAI"
-html_logo = "_static/course-mark.svg"
+html_title = project
 html_static_path = ["_static"]
-html_css_files = ["waterloo.css"]
+html_css_files = ["course.css"]
+templates_path = ["_templates"]
 html_baseurl = "https://chikuang.github.io/teaching/genai/"
 html_context = {"default_mode": "light"}
 html_theme_options = {
     # The book theme has its own header; avoid duplicate mobile toggle buttons.
     "navbar_persistent": [],
+    "pygments_light_style": "friendly",
+    "pygments_dark_style": "friendly",
     "repository_url": "https://github.com/chikuang/Teaching-GenAI",
     "repository_branch": "main",
     "path_to_docs": "docs",
@@ -33,8 +35,8 @@ html_theme_options = {
     "show_toc_level": 2,
     "navigation_depth": 3,
     "home_page_in_toc": True,
-    "logo": {"text": "Teaching-GenAI"},
-    "extra_footer": "Topic Course · Independent study<br>Python · Sphinx · MyST-NB",
+    "logo": {"text": "STAT XXXX Generate AI"},
+    "extra_footer": "STAT XXXX Generate AI · Independent study",
 }
 html_show_sourcelink = True
 html_show_sphinx = False
