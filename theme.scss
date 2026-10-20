@@ -1,0 +1,31 @@
+/*-- scss:defaults --*/
+$primary: #203f68;
+$secondary: #9a6416;
+$link-color: #245a94;
+$body-bg: #fffdf8;
+$body-color: #243348;
+$navbar-bg: #203f68;
+$navbar-fg: #ffffff;
+$sidebar-bg: #f0f3f7;
+$sidebar-fg: #253b56;
+$code-block-bg: #f4f6f9;
+$font-size-root: 17px;
+$headings-font-weight: 650;
+$font-family-sans-serif: "Aptos", "Segoe UI", system-ui, sans-serif;
+
+/*-- scss:rules --*/
+.quarto-title-block .title { color: #203f68; letter-spacing: -.025em; }
+.quarto-title-block .subtitle { max-width: 46rem; color: #59677a; }
+#quarto-sidebar { border-right: 1px solid #dce3ec; }
+#quarto-sidebar .sidebar-item-text.active { font-weight: 650; color: #203f68; }
+.course-intro { border-left: 5px solid #c88a30; padding: 1.2rem 1.4rem; background: #f7f0e2; border-radius: 0 .4rem .4rem 0; margin: 1.5rem 0; }
+.course-intro p:last-child { margin-bottom: 0; }
+.course-tag { font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; color: #78501b; }
+.course-path { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.course-path > div, .course-path > section { border-top: 3px solid #c88a30; padding: 1rem; background: #f0f3f7; border-radius: .2rem; }
+.course-path h3 { font-size: 1.05rem; margin-top: 0; }
+.course-path p { font-size: .92rem; margin-bottom: 0; }
+main p, main li { line-height: 1.65; }
+h2 { margin-top: 2.1rem; }
+a:focus-visible, button:focus-visible { outline: 3px solid #c88a30; outline-offset: 3px; }
+@media (max-width: 650px) { .course-path { grid-template-columns: 1fr; } .course-intro { padding: 1rem; } }

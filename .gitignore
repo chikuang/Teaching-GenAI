@@ -1,0 +1,16 @@
+.venv/
+.quarto/
+_book/
+_freeze/
+.jupyter/
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+
+/.quarto/
+**/*.quarto_ipynb

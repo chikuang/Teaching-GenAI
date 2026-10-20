@@ -1,0 +1,56 @@
+project:
+  type: book
+  output-dir: _book
+  resources:
+    - notebooks/*.ipynb
+
+book:
+  title: "Teaching-GenAI"
+  subtitle: "Topic Course · Generative AI through the lens of statisticians"
+  author: "Chi-Kuang Yeh"
+  date: "2026-10-20"
+  date-format: "MMMM D, YYYY"
+  site-url: https://chikuang.github.io/teaching/genai/
+  repo-url: https://github.com/chikuang/Teaching-GenAI
+  repo-actions: [source]
+  chapters:
+    - index.qmd
+    - syllabus.qmd
+    - statistical-lens.qmd
+    - part: "Learn & teach with Python"
+      chapters:
+        - python-workflow.qmd
+        - 01-python-lab.qmd
+    - readings.qmd
+  navbar:
+    right:
+      - text: "Teaching"
+        href: https://chikuang.github.io/#teaching
+  sidebar:
+    style: docked
+    search: true
+    collapse-level: 2
+  page-footer:
+    left: "Chi-Kuang Yeh · Topic Course · Independent study"
+    right: "Built with Quarto + Python / Jupyter"
+
+jupyter: python3
+execute:
+  freeze: false
+  cache: false
+  error: false
+  warning: false
+
+format:
+  html:
+    theme: [cosmo, theme.scss]
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    code-copy: true
+    code-fold: false
+    code-overflow: wrap
+    link-external-newwindow: true
+    html-math-method: mathjax
+
+editor: source

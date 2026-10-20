@@ -1,0 +1,8 @@
+# The first lab runs on a CPU with no API key.
+numpy>=2.0,<3
+matplotlib>=3.9,<4
+jupyterlab>=4,<5
+nbclient>=0.10,<1
+nbformat>=5.10,<6
+ipykernel>=6.29,<8
+PyYAML>=6,<7
