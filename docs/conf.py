@@ -21,6 +21,8 @@ html_css_files = ["waterloo.css"]
 html_baseurl = "https://chikuang.github.io/teaching/genai/"
 html_context = {"default_mode": "light"}
 html_theme_options = {
+    # The book theme has its own header; avoid duplicate mobile toggle buttons.
+    "navbar_persistent": [],
     "repository_url": "https://github.com/chikuang/Teaching-GenAI",
     "repository_branch": "main",
     "path_to_docs": "docs",
