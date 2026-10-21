@@ -11,3 +11,6 @@ nbclient>=0.10,<1
 nbformat>=5.10,<6
 ipykernel>=6.29,<8
 PyYAML>=6,<7
+
+# CPU neural-network labs; no pretrained weights or API calls.
+torch>=2.5,<3

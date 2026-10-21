@@ -6,15 +6,18 @@ Chi-Kuang Yeh · Independent study · Python
 - [Course website](https://chikuang.github.io/teaching/genai/)
 - [Download course PDF](https://chikuang.github.io/teaching/genai/STAT-XXXX-Generative-AI.pdf)
 - [Complete Chapter 1](https://chikuang.github.io/teaching/genai/chapters/01-probability-to-genai.html)
-- [14-chapter outline](https://chikuang.github.io/teaching/genai/syllabus.html)
+- [14-chapter course guide](https://chikuang.github.io/teaching/genai/syllabus.html)
 - [Python setup and authoring guide](https://chikuang.github.io/teaching/genai/python-workflow.html)
 - [Executed Chapter 1 notebook](https://chikuang.github.io/teaching/genai/notebooks/01-probability-to-genai.ipynb)
 
 A self-paced course for a statistician with a PhD-level background in statistical
 machine learning who is beginning to learn Python, attention, generative models,
-and agents. Chapter 1 is a complete lesson with step-by-step code, mathematical
-derivations, executed figures, eight exercises, and worked solutions. Chapters
-2–14 have individual outline pages; their full lessons are planned work.
+and agents. All 14 chapters contain developed lessons, mathematical explanations,
+executed Python experiments, exercises, worked solutions, and downloadable notebooks.
+The core labs run on a CPU with NumPy and PyTorch, without API keys or downloaded
+model weights. RAG and agent chapters include explicit offline baselines and
+separately describe language-model integration extensions. The capstone implements
+and evaluates a bounded statistical simulation assistant.
 
 ## Build the website and course PDF
 
@@ -39,8 +42,10 @@ python -m http.server 8767 --directory _build/html
 
 Open `http://localhost:8767`. Windows users can create the environment with
 `py -3.12 -m venv .venv` and activate it with `.venv\Scripts\Activate.ps1`.
-`requirements-lock.txt` records the tested macOS/Python 3.12 environment and may
-need platform-specific adjustment elsewhere.
+`requirements-lock.txt` records package versions from the tested macOS/Python 3.13
+environment; CI also builds the course with Python 3.12 on Linux. Use
+`requirements.txt` for portable installation. The Linux workflow installs CPU-only
+PyTorch before the other dependencies to avoid unnecessary CUDA packages.
 
 The default command builds both HTML and a typeset, complete course PDF from the
 same chapter tree. MyST-NB caches successful notebook executions so both formats
@@ -56,8 +61,8 @@ python scripts/build.py --format pdf
 
 This also updates the PDF in `_build/html/`, ready to publish with the website.
 The generated LaTeX and compile logs are under `_build/latex/`.
-Executed notebooks are exported to its `notebooks/` directory. The first chapter
-requires no GPU, API key, or model download. To experiment locally, open a
+Executed notebooks are exported to its `notebooks/` directory. All core labs
+require no GPU, API key, or model download. To experiment locally, open a
 downloaded notebook with `python -m jupyterlab`.
 
 ## Authoring
