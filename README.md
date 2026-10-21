@@ -92,9 +92,10 @@ Add their paths to the homepage's toctree to include them in the sidebar.
 
 HTML code blocks are folded by default. Click **Code** (or focus it and press
 Enter/Space) to expand or collapse a block. `docs/_ext/code_folding.py` applies
-this to executable inputs and ordinary fenced code throughout the course;
-outputs and plots stay visible in a lightly colored panel labeled **Output**, with
-colors adjusted for light and dark mode. The PDF and downloaded notebooks retain all code.
+this to executable inputs and ordinary fenced code throughout the course. Expanded
+code has a light pink background; outputs and plots stay visible in a light yellow
+panel labeled **Output**. Both colors adapt to dark mode. The PDF and downloaded
+notebooks retain all code.
 
 Give equations that are discussed later a descriptive MyST label on the closing
 delimiter, such as `$$ (eq-attention)`, and refer to them using
