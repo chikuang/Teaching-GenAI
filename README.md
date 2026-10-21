@@ -4,6 +4,7 @@
 Chi-Kuang Yeh · Independent study · Python
 
 - [Course website](https://chikuang.github.io/teaching/genai/)
+- [Download course PDF](https://chikuang.github.io/teaching/genai/STAT-XXXX-Generate-AI.pdf)
 - [Complete Chapter 1](https://chikuang.github.io/teaching/genai/chapters/01-probability-to-genai.html)
 - [14-chapter outline](https://chikuang.github.io/teaching/genai/syllabus.html)
 - [Python setup and authoring guide](https://chikuang.github.io/teaching/genai/python-workflow.html)
@@ -15,14 +16,18 @@ and agents. Chapter 1 is a complete lesson with step-by-step code, mathematical
 derivations, executed figures, eight exercises, and worked solutions. Chapters
 2–14 have individual outline pages; their full lessons are planned work.
 
-## Python builds the whole website
+## Build the website and course PDF
 
 The site uses **Sphinx + MyST-NB + sphinx-book-theme**, with white backgrounds,
 readable system fonts, Waterloo yellow, and Mathematics pink accents. `docs/` contains the canonical sources;
 Python cells are executed during rendering. Quarto and Node.js are not required
 to build the site. The earlier Quarto version is preserved in Git history.
 
-Use Python 3.12. On macOS/Linux:
+Use Python 3.12 and a TeX installation providing `xelatex` and `latexmk`.
+MacTeX on macOS or TeX Live on Linux provides the PDF typesetting tools. On
+Ubuntu, install `latexmk texlive-xetex texlive-latex-extra texlive-fonts-recommended fonts-freefont-otf`.
+
+On macOS/Linux:
 
 ```bash
 python3.12 -m venv .venv
@@ -37,7 +42,20 @@ Open `http://localhost:8767`. Windows users can create the environment with
 `requirements-lock.txt` records the tested macOS/Python 3.12 environment and may
 need platform-specific adjustment elsewhere.
 
-The build fails on notebook errors or Sphinx warnings and writes `_build/html/`.
+The default command builds both HTML and a typeset, complete course PDF from the
+same chapter tree. MyST-NB caches successful notebook executions so both formats
+use the same outputs; changed notebook content is executed again. The build fails
+on notebook errors, Sphinx warnings, or a LaTeX compilation error and writes `_build/html/`.
+
+The PDF is `_build/html/STAT-XXXX-Generate-AI.pdf`. It includes a linked contents
+page, formulas, code, executed outputs, and figures. To regenerate only the PDF:
+
+```bash
+python scripts/build.py --format pdf
+```
+
+This also updates the PDF in `_build/html/`, ready to publish with the website.
+The generated LaTeX and compile logs are under `_build/latex/`.
 Executed notebooks are exported to its `notebooks/` directory. The first chapter
 requires no GPU, API key, or model download. To experiment locally, open a
 downloaded notebook with `python -m jupyterlab`.
@@ -61,5 +79,5 @@ into that checkout's `teaching/genai/`, review the changes, and commit/push both
 the course source and published output. Do not replace other website directories.
 The Teaching entry is maintained in `chikuang/website`.
 
-The GitHub Actions workflow validates the HTML build and saves a build artifact;
+The GitHub Actions workflow installs TeX, validates both HTML and PDF, and saves a build artifact;
 it does not publish automatically into the separate website repository.

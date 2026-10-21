@@ -8,7 +8,7 @@ master_doc = "index"
 language = "en"
 myst_enable_extensions = ["dollarmath", "amsmath", "colon_fence", "deflist"]
 myst_heading_anchors = 4
-nb_execution_mode = "force"
+nb_execution_mode = "cache"
 nb_execution_timeout = 120
 nb_execution_raise_on_error = True
 nb_execution_show_tb = True
@@ -19,10 +19,11 @@ html_static_path = ["_static"]
 html_css_files = ["course.css"]
 templates_path = ["_templates"]
 html_baseurl = "https://chikuang.github.io/teaching/genai/"
-html_context = {"default_mode": "light"}
+html_context = {"default_mode": "light", "course_pdf": "STAT-XXXX-Generate-AI.pdf"}
 html_theme_options = {
     # The book theme has its own header; avoid duplicate mobile toggle buttons.
     "navbar_persistent": [],
+    "article_header_end": ["course-pdf-button.html", "article-header-buttons.html"],
     "pygments_light_style": "friendly",
     "pygments_dark_style": "friendly",
     "repository_url": "https://github.com/chikuang/Teaching-GenAI",
@@ -44,3 +45,27 @@ html_last_updated_fmt = "%B %d, %Y"
 numfig = True
 pygments_style = "friendly"
 html_copy_source = True
+
+# The same chapter tree and executed examples form the downloadable course book.
+latex_engine = "xelatex"
+latex_documents = [("index", "STAT-XXXX-Generate-AI.tex", project, author, "manual", True)]
+latex_show_urls = "footnote"
+latex_show_pagerefs = True
+latex_domain_indices = False
+latex_elements = {
+    "papersize": "letterpaper",
+    "pointsize": "11pt",
+    "extraclassoptions": "oneside,openany",
+    "geometry": r"\usepackage[margin=1in,headheight=26pt]{geometry}",
+    "fncychap": "",
+    "makeindex": "",
+    "printindex": "",
+    "tableofcontents": r"\renewcommand{\contentsname}{Contents}\tableofcontents",
+    "sphinxsetup": r"VerbatimColor={RGB}{247,248,250},VerbatimBorderColor={RGB}{220,225,230},TitleColor={RGB}{48,56,66},InnerLinkColor={RGB}{162,0,110},OuterLinkColor={RGB}{162,0,110}",
+    "preamble": r"""
+\setcounter{secnumdepth}{-1}
+\setcounter{tocdepth}{1}
+\fvset{fontsize=\small}
+\setlength{\emergencystretch}{3em}
+""",
+}
