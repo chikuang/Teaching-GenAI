@@ -16,6 +16,22 @@ OUTPUT = BUILD / "html"
 PDF_NAME = "STAT-XXXX-Generative-AI"
 
 
+def notebook_examples(markdown):
+    """Render the course's MyST example boxes in ordinary Jupyter Markdown."""
+    def blockquote(match):
+        title, options, body = match.groups()
+        if ":class: course-example" not in options.splitlines():
+            return match[0]
+        lines = [f"**{title}**", "", *body.strip().splitlines()]
+        return "\n".join("> " + line if line else ">" for line in lines)
+
+    return re.sub(
+        r"(?ms)^:::\{admonition\} (Example [^\n]+)\n"
+        r"((?::[^\n]*\n)+)\n(.*?)\n:::[ \t]*$",
+        blockquote, markdown,
+    )
+
+
 def main():
     parser = argparse.ArgumentParser(description="Build the course website and downloadable PDF.")
     parser.add_argument("--format", choices=["all", "pdf"], default="all",
@@ -119,6 +135,7 @@ def main():
                 cell.source = re.sub(r"\{eq\}`([^`]+)`",
                                      lambda match: equation_links[match[1]], cell.source)
                 cell.source = re.sub(r"(?m)^\$\$ \(eq-[\w-]+\)$", "$$", cell.source)
+                cell.source = notebook_examples(cell.source)
         nbformat.write(notebook, target)
     shutil.copytree(downloads, OUTPUT / "notebooks", dirs_exist_ok=True)
     (OUTPUT / ".nojekyll").touch()

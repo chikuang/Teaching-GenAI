@@ -14,6 +14,8 @@ A self-paced course for a statistician with a PhD-level background in statistica
 machine learning who is beginning to learn Python, attention, generative models,
 and agents. All 14 chapters contain developed lessons, mathematical explanations,
 executed Python experiments, exercises, worked solutions, and downloadable notebooks.
+The chapters also contain 33 numbered worked examples that connect concrete
+scenarios and calculations to the definitions, formulas, and executable labs.
 The core labs run on a CPU with NumPy and PyTorch, without API keys or downloaded
 model weights. RAG and agent chapters include explicit offline baselines and
 separately describe language-model integration extensions. The capstone implements
@@ -105,6 +107,31 @@ leave one-off expressions unnumbered. Chapter numbers follow the numbered
 `docs/chapters/` filenames, so course-guide pages do not shift the equation numbers.
 The notebook exporter converts equation references to numbered links to the
 course website and removes MyST label syntax from displayed math.
+
+Worked examples use an always-visible MyST admonition with chapter-local numbering
+and a stable descriptive anchor. Place each after the concept it illustrates,
+before moving to the next concept. Use a concrete setup, a calculation or trace,
+and an interpretation; identify hypothetical numbers explicitly when they could
+be confused with executed results. For example:
+
+```markdown
+:::{admonition} Example 12.1 · When is another tool call worthwhile?
+:class: course-example
+:name: ex-agent-value-of-information
+
+**Setup.** State the task and assumptions.
+
+**Work it through.** Show the numerical steps or decision trace.
+
+**What this shows.** Explain the conclusion and its limits.
+:::
+```
+
+The shared CSS gives examples a quiet blue-green frame in light and dark themes.
+Sphinx renders the same titled boxes in the PDF; `scripts/build.py` converts them
+to standard Markdown blockquotes in downloaded notebooks, retaining math and
+numbered equation links. Keep code cells outside example directives so they remain
+executable, and number examples in their order within each chapter.
 
 ## Publication
 
