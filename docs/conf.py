@@ -37,6 +37,7 @@ html_theme_options = {
     "navigation_depth": 3,
     "home_page_in_toc": True,
     "logo": {"text": "STAT XXXX Generative AI"},
+    "footer_content_items": ["copyright.html", "last-updated.html", "extra-footer.html"],
     "extra_footer": "STAT XXXX Generative AI · Independent study",
 }
 html_show_sourcelink = True
