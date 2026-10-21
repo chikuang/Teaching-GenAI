@@ -19,6 +19,16 @@ model weights. RAG and agent chapters include explicit offline baselines and
 separately describe language-model integration extensions. The capstone implements
 and evaluates a bounded statistical simulation assistant.
 
+Every chapter includes a workflow or architecture diagram and a table of component
+contracts and checks. The RAG chapter develops the indexing/query-time distinction,
+retrieval alternatives, context packing, prompt construction, citation validation,
+and controlled failure diagnosis in one executable example. Its extractive backend
+is explicitly separate from a real language-model adapter.
+
+Original workflow diagrams are rendered by `python scripts/draw_frameworks.py`.
+The checked-in PNGs in `docs/_static/diagrams/` appear in HTML, the PDF, and the
+downloadable notebooks without a JavaScript diagram dependency.
+
 ## Build the website and course PDF
 
 The site uses **Sphinx + MyST-NB + sphinx-book-theme**, with light, dark, and system-following themes,
