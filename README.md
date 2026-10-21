@@ -90,6 +90,11 @@ downloaded notebook with `python -m jupyterlab`.
 New executable MyST lessons are discovered automatically by the build script.
 Add their paths to the homepage's toctree to include them in the sidebar.
 
+HTML code blocks are folded by default. Click **Code** (or focus it and press
+Enter/Space) to expand or collapse a block. `docs/_ext/code_folding.py` applies
+this to executable inputs and ordinary fenced code throughout the course;
+outputs and plots stay visible. The PDF and downloaded notebooks retain all code.
+
 ## Publication
 
 The public website is maintained in `chikuang/chikuang.github.io` on `master`.

@@ -1,9 +1,14 @@
 """Python configuration for the Teaching-GenAI course book."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).parent / "_ext"))
+
 project = "STAT XXXX Generative AI"
 author = "Chi-Kuang Yeh"
 copyright_year = "2026"
 copyright = f"{copyright_year}, {author}"
-extensions = ["myst_nb", "sphinx_copybutton", "sphinx_design"]
+extensions = ["myst_nb", "sphinx_copybutton", "sphinx_design", "code_folding"]
 exclude_patterns = ["_build", "notebooks"]
 master_doc = "index"
 language = "en"
