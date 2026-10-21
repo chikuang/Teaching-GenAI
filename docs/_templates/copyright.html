@@ -1,0 +1,3 @@
+{% if show_copyright and copyright %}
+<p class="copyright">© Copyright {{ copyright_year | e }}, <a href="{{ author_url | e }}">{{ author | e }}</a>.</p>
+{% endif %}

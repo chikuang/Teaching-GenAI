@@ -1,7 +1,8 @@
 """Python configuration for the Teaching-GenAI course book."""
 project = "STAT XXXX Generative AI"
 author = "Chi-Kuang Yeh"
-copyright = "2026, Chi-Kuang Yeh"
+copyright_year = "2026"
+copyright = f"{copyright_year}, {author}"
 extensions = ["myst_nb", "sphinx_copybutton", "sphinx_design"]
 exclude_patterns = ["_build", "notebooks"]
 master_doc = "index"
@@ -19,7 +20,12 @@ html_static_path = ["_static"]
 html_css_files = ["course.css"]
 templates_path = ["_templates"]
 html_baseurl = "https://chikuang.github.io/teaching/genai/"
-html_context = {"default_mode": "auto", "course_pdf": "STAT-XXXX-Generative-AI.pdf"}
+html_context = {
+    "default_mode": "auto",
+    "course_pdf": "STAT-XXXX-Generative-AI.pdf",
+    "copyright_year": copyright_year,
+    "author_url": "https://chikuang.github.io/",
+}
 html_theme_options = {
     # The book theme has its own header; avoid duplicate mobile toggle buttons.
     "navbar_persistent": [],
@@ -38,7 +44,7 @@ html_theme_options = {
     "home_page_in_toc": True,
     "logo": {"text": "STAT XXXX Generative AI"},
     "footer_content_items": ["copyright.html", "last-updated.html", "extra-footer.html"],
-    "extra_footer": "STAT XXXX Generative AI · Independent study",
+    "extra_footer": "STAT XXXX Generative AI",
 }
 html_show_sourcelink = True
 html_show_sphinx = False
