@@ -1,7 +1,8 @@
-"""Render the course's original workflow diagrams for HTML, notebooks, and PDF.
+"""Render plain reference drafts of the course's workflow diagrams.
 
-Run with the course Python environment. Checked-in PNGs keep Sphinx builds
-independent of browser JavaScript or a separate diagram renderer.
+Published illustrations live in docs/_static/diagrams and are maintained using
+the image-generation briefs in scripts/framework_art.json. This reference
+renderer writes to _build/framework-drafts so it cannot overwrite that artwork.
 """
 from pathlib import Path
 
@@ -10,7 +11,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
-OUTPUT = Path(__file__).resolve().parents[1] / "docs" / "_static" / "diagrams"
+OUTPUT = Path(__file__).resolve().parents[1] / "_build" / "framework-drafts"
 DIAGRAMS = {
     "01-statistical-workflow": ("Fit, simulate, and evaluate different objects", [
         ("ESTIMATION", ["Observed training\ndata", "Counts and\nsmoothing", "Fitted probability\ndistribution"]),

@@ -25,9 +25,13 @@ retrieval alternatives, context packing, prompt construction, citation validatio
 and controlled failure diagnosis in one executable example. Its extractive backend
 is explicitly separate from a real language-model adapter.
 
-Original workflow diagrams are rendered by `python scripts/draw_frameworks.py`.
-The checked-in PNGs in `docs/_static/diagrams/` appear in HTML, the PDF, and the
-downloadable notebooks without a JavaScript diagram dependency.
+Workflow diagrams use a restrained layout with small chibi memory icons,
+readable labels, and a short recall cue. The illustrations were created with
+the built-in image generation tool; `scripts/framework_art.json` records the
+final prompts. The checked-in PNGs in `docs/_static/diagrams/` appear in HTML,
+the PDF, and downloadable notebooks without a JavaScript diagram dependency.
+`python scripts/draw_frameworks.py` renders plain reference drafts into
+`_build/framework-drafts/` without overwriting the published illustrations.
 
 ## Build the website and course PDF
 
