@@ -1,5 +1,5 @@
 """Python configuration for the Teaching-GenAI course book."""
-project = "STAT XXXX Generate AI"
+project = "STAT XXXX Generative AI"
 author = "Chi-Kuang Yeh"
 copyright = "2026, Chi-Kuang Yeh"
 extensions = ["myst_nb", "sphinx_copybutton", "sphinx_design"]
@@ -19,7 +19,7 @@ html_static_path = ["_static"]
 html_css_files = ["course.css"]
 templates_path = ["_templates"]
 html_baseurl = "https://chikuang.github.io/teaching/genai/"
-html_context = {"default_mode": "light", "course_pdf": "STAT-XXXX-Generate-AI.pdf"}
+html_context = {"default_mode": "light", "course_pdf": "STAT-XXXX-Generative-AI.pdf"}
 html_theme_options = {
     # The book theme has its own header; avoid duplicate mobile toggle buttons.
     "navbar_persistent": [],
@@ -36,8 +36,8 @@ html_theme_options = {
     "show_toc_level": 2,
     "navigation_depth": 3,
     "home_page_in_toc": True,
-    "logo": {"text": "STAT XXXX Generate AI"},
-    "extra_footer": "STAT XXXX Generate AI · Independent study",
+    "logo": {"text": "STAT XXXX Generative AI"},
+    "extra_footer": "STAT XXXX Generative AI · Independent study",
 }
 html_show_sourcelink = True
 html_show_sphinx = False
@@ -48,7 +48,7 @@ html_copy_source = True
 
 # The same chapter tree and executed examples form the downloadable course book.
 latex_engine = "xelatex"
-latex_documents = [("index", "STAT-XXXX-Generate-AI.tex", project, author, "manual", True)]
+latex_documents = [("index", "STAT-XXXX-Generative-AI.tex", project, author, "manual", True)]
 latex_show_urls = "footnote"
 latex_show_pagerefs = True
 latex_domain_indices = False

@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 BUILD = ROOT / "_build"
 OUTPUT = BUILD / "html"
-PDF_NAME = "STAT-XXXX-Generate-AI"
+PDF_NAME = "STAT-XXXX-Generative-AI"
 
 
 def main():
@@ -72,6 +72,8 @@ def main():
         if not pdf.is_file() or not pdf.read_bytes().startswith(b"%PDF-"):
             raise RuntimeError("The PDF build did not produce a valid PDF file.")
         shutil.copy2(pdf, OUTPUT / pdf.name)
+        # Keep previously shared PDF links working after the title correction.
+        shutil.copy2(pdf, OUTPUT / "STAT-XXXX-Generate-AI.pdf")
 
     if make_html:
         # MyST-NB reuses identical executed cells for the web and PDF editions.
