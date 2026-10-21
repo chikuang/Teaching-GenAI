@@ -55,6 +55,10 @@ html_show_sourcelink = True
 html_show_sphinx = False
 html_last_updated_fmt = "%B %d, %Y"
 numfig = True
+# Number only labeled equations, continuously across the course in both formats.
+math_numfig = True
+math_number_all = False
+numfig_secnum_depth = 0
 pygments_style = "friendly"
 html_copy_source = True
 
@@ -77,6 +81,7 @@ latex_elements = {
     "preamble": r"""
 \setcounter{secnumdepth}{-1}
 \setcounter{tocdepth}{1}
+\counterwithout{equation}{chapter}
 \fvset{fontsize=\small}
 \setlength{\emergencystretch}{3em}
 """,

@@ -95,6 +95,13 @@ Enter/Space) to expand or collapse a block. `docs/_ext/code_folding.py` applies
 this to executable inputs and ordinary fenced code throughout the course;
 outputs and plots stay visible. The PDF and downloaded notebooks retain all code.
 
+Give equations that are discussed later a descriptive MyST label on the closing
+delimiter, such as `$$ (eq-attention)`, and refer to them using
+`Equation {eq}` followed by the label in backticks. HTML and PDF number labeled
+equations continuously across the course; leave one-off expressions unnumbered.
+The notebook exporter converts equation references to numbered links to the
+course website and removes MyST label syntax from displayed math.
+
 ## Publication
 
 The public website is maintained in `chikuang/chikuang.github.io` on `master`.
