@@ -71,6 +71,15 @@ for path in live:
     cells = [c for c in book['cells'] if c['cell_type'] == 'code']
     if not cells or any(c.get('execution_count') is None or any(o['output_type'] == 'error' for o in c.get('outputs', [])) for c in cells):
         errors.append(f'{path.name}: incomplete live notebook')
+students = list((SITE/'_static/assignments').glob('*-student.ipynb'))
+assert len(students) == 14, f'Expected 14 unfinished student notebooks, found {len(students)}'
+for path in students:
+    book = json.loads(path.read_text())
+    code = [c for c in book['cells'] if c['cell_type'] == 'code']
+    if sum('raise NotImplementedError' in ''.join(c['source']) for c in code) != 1:
+        errors.append(f'{path.name}: missing independent implementation stub')
+    if any(c.get('execution_count') is not None or c.get('outputs') for c in code):
+        errors.append(f'{path.name}: student template unexpectedly contains worked outputs')
 if errors:
     raise SystemExit('\n'.join(errors))
-print(f'Checked {len(pages)} HTML pages, {len(notebooks)} teaching notebooks and {len(live)} live notebooks: internal links, assets, and exports passed.')
+print(f'Checked {len(pages)} HTML pages, {len(notebooks)} teaching notebooks, {len(live)} live notebooks and {len(students)} student templates: internal links, assets, and exports passed.')

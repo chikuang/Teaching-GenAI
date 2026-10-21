@@ -189,3 +189,43 @@ inference. These are authored development demonstrations, including failures.
 - Earlier outputs remain historical. `labs/archived-v1/` retains the v1 runner bytes, and `labs/archived-guided-initial/` retains the first guided-run code. Reproduce their original layout through Git history; do not execute archival modules as a current supported entry point.
 
 The public HTML/PDF keep the Waterloo black/yellow and Mathematics pink theme.
+
+## Worked examples, independent work, and evidence
+
+The [assignment guide](https://chikuang.github.io/teaching/genai/assignments.html)
+links 14 student notebooks in `labs/assignments/`. Their `NotImplementedError`
+cells are intentional: implement the function before running the independent
+fixtures in `labs/exercise_checks.py`. Separate worked functions are available in
+`labs/assignment_solutions.py`. Each assignment also requires a new transfer
+experiment and a brief statistical interpretation; passing fixtures alone is not
+full acceptance. Read A.11 for notebook paths before the first live lab, and A.12
+before Chapter 2's compact Python syntax.
+
+Current guided traces use schema version 3: input messages are frozen before
+serialization, and capstone execution checks all six requested settings against a
+separately reviewed request card. Without a reviewed card it does not simulate.
+The current live protocol supports iid normal/exponential sampling, n=5–500,
+nominal 95% z intervals with estimated SD, and 500 repetitions. Unsupported
+settings are explicitly refused. Historical Agent prompt-list limitations are
+explained beside the retained v2 records and archived source.
+
+`docs/_static/evaluation/common-evaluation.json` and `.csv` connect Chapters
+10–14 to the same actual observations. Editorial support/completeness annotations
+are separate from mechanical checks and are bound to the response/evidence hash.
+These are worked course annotations, not independent human ratings or a sampled
+population benchmark. Rebuild the table only after reviewing changed evidence:
+
+```bash
+python scripts/export_evaluation.py
+python -m unittest discover -s tests -v
+python scripts/build.py
+python scripts/check_site.py
+```
+
+The tests exercise deliberately incorrect implementations, request changes,
+immutable prompt snapshots, missing/duplicate evaluation pairs, and notebook
+imports from nested folders without `GENAI_COURSE_ROOT`. Student templates are
+also executed in isolated processes with the separate reference function inserted;
+the published student files remain unfinished. Live pretrained-model execution
+is optional and separate from the ordinary book build; its four published
+notebooks contain actual recorded model outputs.

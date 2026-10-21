@@ -63,7 +63,9 @@ def main():
     record = DOCS / "_static" / "experiments" / "llm-run.json"
     if record.exists():
         import hashlib
-        external_inputs = sorted(record.parent.glob("*.json")) + sorted((ROOT / "labs").glob("*.py"))
+        external_inputs = (sorted(record.parent.glob("*.json"))
+                           + sorted((DOCS / "_static/evaluation").glob("*.json"))
+                           + sorted((ROOT / "labs").glob("*.py")))
         digest = hashlib.sha256(b"".join(p.read_bytes() for p in external_inputs)).hexdigest()
         stamp = BUILD / "experiment.sha256"
         if not stamp.exists() or stamp.read_text() != digest:
@@ -170,6 +172,8 @@ def main():
     # Live notebooks are downloadable artifacts, excluded from Sphinx source discovery.
     shutil.copytree(DOCS / "_static" / "live-notebooks",
                     OUTPUT / "_static" / "live-notebooks", dirs_exist_ok=True)
+    shutil.copytree(DOCS / "_static" / "assignments",
+                    OUTPUT / "_static" / "assignments", dirs_exist_ok=True)
     (OUTPUT / ".nojekyll").touch()
     print(f"\nBuilt course output: {OUTPUT}")
     if make_pdf:

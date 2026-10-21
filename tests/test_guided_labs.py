@@ -66,12 +66,15 @@ class Contracts(unittest.TestCase):
     def test_simulation_rejects_invalid_intent_without_computing(self):
         for raw in ['{"family":"cauchy","n":22}', '{"family":"normal","n":true}',
                     '{"family":"normal","n":5000}', '{"family":"normal","n":12,"extra":0}']:
-            result = simulation_workflow(lambda messages: raw, 'fixture')
+            result = simulation_workflow(lambda messages, **kwargs: raw, 'fixture')
             self.assertEqual(result['status'], 'invalid')
             self.assertNotIn('tool_result', result)
-        result = simulation_workflow(lambda messages: '{"family":"unsupported","n":22}', 'Cauchy')
+        from labs.live_tasks import BASE_SPEC
+        card = dict(BASE_SPEC, family='cauchy', n=22)
+        result = simulation_workflow(lambda messages, **kwargs: json.dumps(card), 'Cauchy', card)
         self.assertEqual(result['status'], 'abstained')
         self.assertNotIn('tool_result', result)
+
 
 
 class Continuity(unittest.TestCase):
@@ -114,11 +117,11 @@ class Continuity(unittest.TestCase):
                     self.assertFalse(any(o.output_type == 'error' for o in cell.outputs))
 
     def test_guided_trace_provenance_is_preserved(self):
-        for name in ['first-llm', 'rag-bridge', 'rag-bridge-initial', 'agent-bridge', 'capstone-bridge']:
+        for name in ['first-llm', 'rag-bridge', 'rag-bridge-initial', 'agent-bridge', 'capstone-bridge', 'first-llm-v2', 'rag-bridge-v2', 'agent-bridge-v2', 'capstone-bridge-v2']:
             record = json.loads((ROOT/'docs/_static/experiments'/f'{name}.json').read_text())
             self.assertGreater(len(record['calls']), 0)
             for source, digest in record['source_sha256'].items():
-                candidates = [ROOT/'labs'/source, ROOT/'labs/archived-guided-initial'/source]
+                candidates = [ROOT/'labs'/source, ROOT/'labs/archived-guided-initial'/source, ROOT/'labs/archived-guided-v2'/source]
                 self.assertTrue(any(p.exists() and hashlib.sha256(p.read_bytes()).hexdigest() == digest for p in candidates), source)
             self.assertTrue(all(c['messages'] and isinstance(c['raw'], str) for c in record['calls']))
 

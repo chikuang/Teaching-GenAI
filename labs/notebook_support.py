@@ -8,9 +8,10 @@ from .llm_lab import MODEL
 
 def save_run(root, name, lm, results):
     root = Path(root)
-    sources = ['contracts.py', 'llm_lab.py', 'rag_core.py', 'guided_systems.py', 'notebook_support.py']
+    sources = ['contracts.py', 'llm_lab.py', 'rag_core.py', 'guided_systems.py', 'notebook_support.py', 'live_tasks.py']
     record = {'created_utc': datetime.now(timezone.utc).isoformat(), 'model': MODEL,
               'runtime': lm.versions, 'calls': lm.calls, 'results': results,
+              'schema_version': 3,
               'protocol': 'Guided development demonstration. Actual local model calls; no hidden answer replacement. Authored tasks, not a sampled population benchmark.',
               'source_sha256': {s: hashlib.sha256((root/'labs'/s).read_bytes()).hexdigest() for s in sources}}
     path = root/'.runs'/f'{name}.json'

@@ -106,7 +106,7 @@ class CourseContinuity(unittest.TestCase):
         self.assertEqual(len(record['rag']), len(lab.RAG_TASKS)*3)
         self.assertEqual(len(record['agents']), len(lab.AGENT_TASKS)*3)
         demo = json.loads((ROOT/'docs/_static/experiments/capstone-demo.json').read_text())
-        self.assertEqual(demo['runner_sha256'], hashlib.sha256((ROOT/'labs/capstone_live.py').read_bytes()).hexdigest())
+        self.assertEqual(demo['runner_sha256'], hashlib.sha256((ROOT/'labs/archived-guided-v2/capstone_live.py').read_bytes()).hexdigest())
         self.assertEqual(len(demo['rows']), 3)
         pilot = json.loads((ROOT/'docs/_static/experiments/llm-pilot.json').read_text())
         self.assertEqual(pilot['protocol']['runner_sha256'], hashlib.sha256((ROOT/'labs/archived-pilot/llm_lab.py').read_bytes()).hexdigest())

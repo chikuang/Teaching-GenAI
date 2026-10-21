@@ -15,6 +15,7 @@ import statistics
 import time
 from datetime import datetime, timezone
 import sys
+from copy import deepcopy
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -84,6 +85,8 @@ class LocalLM:
         self.calls = []
 
     def __call__(self, messages, max_new_tokens=128):
+        # Snapshot before serialization: callers may extend or edit their history.
+        messages = deepcopy(messages)
         # A chat template adds model-specific role delimiters, not learned weights.
         text = self.tokenizer.apply_chat_template(messages, tokenize=False,
                                                   add_generation_prompt=True)
@@ -94,12 +97,16 @@ class LocalLM:
         with self.torch.inference_mode():
             output = self.model.generate(**inputs, max_new_tokens=max_new_tokens,
                                          do_sample=False, pad_token_id=self.tokenizer.eos_token_id)
+        return self.record_generation(messages, text, inputs, output, started, max_new_tokens)
+
+    def record_generation(self, messages, text, inputs, output, started, max_new_tokens):
+        """Decode and log an already generated sequence; performs no model call."""
         new_ids = output[0, inputs.input_ids.shape[1]:]
         raw = self.tokenizer.decode(new_ids, skip_special_tokens=True).strip()
         eos = self.model.generation_config.eos_token_id
         eos = eos if isinstance(eos, list) else [eos]
         stopped = len(new_ids) > 0 and int(new_ids[-1]) in eos
-        self.calls.append({'messages': messages, 'raw': raw,
+        self.calls.append({'messages': deepcopy(messages), 'serialized_prompt': text, 'raw': raw,
                            'prompt_tokens': int(inputs.input_ids.shape[1]),
                            'generated_tokens': len(new_ids), 'max_new_tokens': max_new_tokens,
                            'stop_reason': 'eos' if stopped else 'token_budget',
@@ -291,6 +298,10 @@ def coverage_tool(family, n, repetitions=500, seed=2026):
     import numpy as np
     if family not in ('normal', 'exponential') or type(n) is not int or not 5 <= n <= 500:
         raise ValueError('Only normal/exponential and integer n between 5 and 500')
+    if type(repetitions) is not int or not 100 <= repetitions <= 50000:
+        raise ValueError('Repetitions must be an integer from 100 to 50000')
+    if type(seed) is not int or seed < 0:
+        raise ValueError('Seed must be a nonnegative integer')
     rng = np.random.default_rng(seed)
     values = (rng.normal(size=(repetitions, n)) if family == 'normal' else
               rng.exponential(size=(repetitions, n)))
@@ -306,49 +317,32 @@ def coverage_tool(family, n, repetitions=500, seed=2026):
 
 
 def capstone_experiment(lm):
+    # The old two-field protocol is archived; current execution checks all settings.
+    from labs.live_tasks import CAPSTONE_CASES
+    from labs.guided_systems import simulation_workflow, scope_reasons
     rows = []
-    for task in CAPSTONE_TASKS:
+    for task_id, question, card in CAPSTONE_CASES:
         start = len(lm.calls)
-        row = {'task': task['id'], 'success': False, 'status': 'invalid'}
-        try:
-            raw = lm([{'role': 'system', 'content': 'Translate the request to JSON with exactly keys "family" ("normal" or "exponential" or "unsupported") and "n" (integer). Do not substitute a distribution. JSON only.'},
-                      {'role': 'user', 'content': task['question']}])
-            request = parse_object(raw)
-            keys(request, ['family', 'n'])
-            row['request'] = request
-            row['interpretation_correct'] = (request['family'] == (task['family'] or 'unsupported') and request['n'] == task['n'])
-            if request['family'] == 'unsupported':
-                row.update(status='abstained', success=task['family'] is None)
-            else:
-                result = coverage_tool(request['family'], request['n'])
-                row['tool_result'] = result
-                raw = lm([{'role': 'system', 'content': 'Explain this simulation result in JSON with exactly keys "family", "n", "estimate", "explanation". Copy the first three fields exactly from the tool. In one short sentence distinguish estimated coverage from a guarantee. JSON only.'},
-                          {'role': 'user', 'content': json.dumps(result)}], max_new_tokens=160)
-                report = parse_object(raw)
-                keys(report, ['family', 'n', 'estimate', 'explanation'])
-                faithful = (type(report['n']) is int and numeric(report['estimate'])
-                            and all(report[k] == result[k] for k in ['family', 'n', 'estimate'])
-                            and isinstance(report['explanation'], str))
-                row.update(report=report, numeric_faithfulness=faithful, status='completed',
-                           success=row['interpretation_correct'] and faithful)
-        except (ValueError, TypeError) as error:
-            row['error'] = str(error)
-        row['call_ids'] = list(range(start, len(lm.calls)))
+        row = simulation_workflow(lm, question, confirmed_request=card)
+        expected = 'abstained' if scope_reasons(card) else 'completed'
+        row.update(task=task_id, call_ids=list(range(start, len(lm.calls))),
+                   interpretation_correct=row.get('request') == card,
+                   success=row.get('request') == card and row['status'] == expected)
         rows.append(row)
-        print('Capstone', task['id'], row['status'], row['success'], flush=True)
     return rows
 
 
 def run(model_dir, output):
+    from labs.live_tasks import CAPSTONE_CASES
     lm = LocalLM(model_dir)
-    record = {'schema_version': 2, 'created_utc': datetime.now(timezone.utc).isoformat(),
+    record = {'schema_version': 3, 'created_utc': datetime.now(timezone.utc).isoformat(),
               'model': MODEL, 'runtime': lm.versions,
               'protocol': {'decoding': 'greedy', 'seed': 2026, 'agent_decision_limit': 4,
-                           'repetitions_per_task': 1, 'development': 'Revision 2 shares the Chapter 10 RAG contract. Historical v1 traces retain their original validator and runner in labs/archived-v1; do not pool their validity rates with this run. This remains a development experiment.',
-                           'task_hash': digest([DOCUMENTS, RAG_TASKS, AGENT_TASKS, CAPSTONE_TASKS]),
+                           'repetitions_per_task': 1, 'development': 'Revision 3 freezes call inputs and uses six-field reviewed request cards for the capstone. Historical v1 traces retain their original validator and runner in labs/archived-v1; do not pool their validity rates with this run. This remains a development experiment.',
+                           'task_hash': digest([DOCUMENTS, RAG_TASKS, AGENT_TASKS, CAPSTONE_CASES]),
                            'runner_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest()},
               'documents': DOCUMENTS, 'rag_tasks': RAG_TASKS, 'agent_tasks': AGENT_TASKS,
-              'capstone_tasks': CAPSTONE_TASKS}
+              'capstone_tasks': CAPSTONE_CASES}
     record['rag'] = rag_experiment(lm)
     record['agents'] = agent_experiment(lm)
     record['capstone'] = capstone_experiment(lm)

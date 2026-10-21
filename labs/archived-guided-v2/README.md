@@ -1,0 +1,3 @@
+# Historical guided sources (v2)
+
+These immutable source files identify the pre-revision records suffixed `-v2.json`. The Agent logger retained a mutable message list: the five per-call `messages` values all became the final 11-message conversation. They cannot reconstruct the actual prompt at each invocation. Raw responses and action/tool traces remain historical evidence. The two-field capstone validated only family and n, so it did not protect other requested interval settings. Do not use these archived helpers for new execution. Current modules and newly executed records implement snapshots and the full reviewed-request protocol.

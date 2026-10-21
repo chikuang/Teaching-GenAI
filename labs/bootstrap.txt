@@ -1,0 +1,16 @@
+from pathlib import Path
+import os
+import sys
+
+start = Path(os.environ.get('GENAI_COURSE_ROOT', Path.cwd())).resolve()
+root = None
+# Examine this folder, then each enclosing folder.
+candidates = [start] + list(start.parents)
+for candidate in candidates:
+    if (candidate / 'labs/model.json').is_file():
+        root = candidate
+        break
+if root is None:
+    raise FileNotFoundError('Keep the notebook inside Teaching-GenAI, or set GENAI_COURSE_ROOT')
+if str(root) not in sys.path:
+    sys.path.insert(0, str(root))

@@ -1,5 +1,7 @@
 """Inspectable bridges: bounded tool decisions and LLM-to-simulation workflow."""
 import json
+import math
+from copy import deepcopy
 from .contracts import parse_transport
 from .llm_lab import DATASETS, execute, keys, numeric, coverage_tool
 
@@ -38,11 +40,14 @@ def run_decisions(policy, question, max_decisions=5, max_tool_calls=4):
     if type(max_tool_calls) is not int or max_tool_calls < 0:
         raise ValueError('Nonnegative integer tool budget required')
     state = {'observed': {}, 'results': []}
-    messages = [{'role': 'system', 'content': AGENT_PROMPT},
+    prompt = AGENT_PROMPT.replace('At most five decisions and four tool attempts',
+                                 f'At most {max_decisions} decisions and {max_tool_calls} tool attempts')
+    messages = [{'role': 'system', 'content': prompt},
                 {'role': 'user', 'content': question}]
     trace, calls = [], 0
     for decision in range(1, max_decisions + 1):
-        raw = policy(messages)
+        # A policy receives observations, but cannot rewrite executor history.
+        raw = policy(deepcopy(messages))
         messages.append({'role': 'assistant', 'content': raw})
         entry = {'decision': decision, 'raw': raw}
         try:
@@ -99,22 +104,47 @@ def rule_policy(dataset, statistic, recover=False):
     return policy
 
 
-def interpret_scenario(lm, question):
-    messages = [
-        {'role': 'system', 'content': 'Extract sampling distribution and sample size. The interval formula does not determine the sampling distribution. Only normal and exponential are supported. Return exactly family and n, following these JSON examples.'},
-        {'role': 'user', 'content': 'Use exponential observations with sample size 10.'},
-        {'role': 'assistant', 'content': '{"family":"exponential","n":10}'},
-        {'role': 'user', 'content': 'Use uniform observations with sample size 15.'},
-        {'role': 'assistant', 'content': '{"family":"unsupported","n":15}'},
-        {'role': 'user', 'content': question},
-    ]
-    request = parse_transport(lm(messages))
-    keys(request, ['family', 'n'])
-    if request['family'] not in ('normal', 'exponential', 'unsupported'):
-        raise ValueError('Unrecognized family')
+SPEC_FIELDS = ['family', 'n', 'method', 'confidence', 'repetitions', 'dependence']
+
+
+def validate_spec(request):
+    """Validate representation without silently filling in omitted settings."""
+    keys(request, SPEC_FIELDS)
+    for field in ['family', 'method', 'dependence']:
+        if not isinstance(request[field], str) or not request[field].strip():
+            raise ValueError(field + ' must be nonempty text')
     if type(request['n']) is not int or not 5 <= request['n'] <= 500:
         raise ValueError('Sample size must be an integer from 5 to 500')
+    if type(request['repetitions']) is not int or not 100 <= request['repetitions'] <= 5000:
+        raise ValueError('Repetitions must be an integer from 100 to 5000')
+    if type(request['confidence']) not in (int, float) or not math.isfinite(request['confidence']):
+        raise ValueError('Confidence must be a finite numeric probability')
+    if not 0 < request['confidence'] < 1:
+        raise ValueError('Confidence must be between zero and one')
     return request
+
+
+def scope_reasons(request):
+    validate_spec(request)
+    reasons = []
+    for key, supported in [('family', ('normal', 'exponential')),
+                           ('method', ('z_estimated_sd',)), ('confidence', (0.95,)),
+                           ('repetitions', (500,)), ('dependence', ('iid',))]:
+        if request[key] not in supported:
+            reasons.append(f'Unsupported {key}: {request[key]!r}; supported: {supported}')
+    return reasons
+
+
+def interpret_scenario(lm, question):
+    messages = [
+        {'role': 'system', 'content': 'Extract ALL requested settings, not just distribution and n. Return exactly one JSON object with family, n, method, confidence, repetitions, dependence. Use method z_estimated_sd for mean +/- 1.96 estimated standard errors at nominal 95%, student_t for Student-t, and dependence iid or dependent. Preserve unsupported requests instead of substituting supported settings. Never invent omitted numeric fields; missing settings will require clarification. JSON only.'},
+        {'role': 'user', 'content': 'Use iid exponential observations, n=10, the nominal 95% mean +/- 1.96 estimated standard-error interval, and 500 repetitions.'},
+        {'role': 'assistant', 'content': '{"family":"exponential","n":10,"method":"z_estimated_sd","confidence":0.95,"repetitions":500,"dependence":"iid"}'},
+        {'role': 'user', 'content': 'Use iid normal observations, n=15, a 99% Student-t interval, and 2000 repetitions.'},
+        {'role': 'assistant', 'content': '{"family":"normal","n":15,"method":"student_t","confidence":0.99,"repetitions":2000,"dependence":"iid"}'},
+        {'role': 'user', 'content': question},
+    ]
+    return validate_spec(parse_transport(lm(messages, max_new_tokens=256)))
 
 
 def report_simulation(result):
@@ -126,15 +156,35 @@ def report_simulation(result):
             "The interval procedure's nominal 95% label does not guarantee its actual coverage.")
 
 
-def simulation_workflow(lm, question):
-    """The LLM interprets; a numerical tool computes; a declared template reports."""
+def execute_confirmed(request, confirmed_request):
+    """An independently reviewed request card gates the computation.
+
+    This is human input, not an automatically inferred gold label or an LLM judge.
+    """
+    validate_spec(request)
+    if confirmed_request is None:
+        return {'status': 'needs_confirmation', 'report': 'Review all six fields against the original question before simulation.'}
+    validate_spec(confirmed_request)
+    reasons = scope_reasons(confirmed_request)
+    if reasons:
+        return {'status': 'abstained', 'reasons': reasons, 'report': '; '.join(reasons)}
+    if request != confirmed_request:
+        return {'status': 'intent_mismatch', 'report': 'Model proposal differs from the independently reviewed request card.'}
+    reasons = scope_reasons(request)
+    if reasons:
+        return {'status': 'abstained', 'reasons': reasons, 'report': '; '.join(reasons)}
+    result = coverage_tool(request['family'], request['n'], repetitions=request['repetitions'])
+    result.update(method=request['method'], confidence=request['confidence'], dependence=request['dependence'])
+    return {'status': 'completed', 'tool_result': result, 'report': report_simulation(result)}
+
+
+def simulation_workflow(lm, question, confirmed_request=None):
+    """Propose -> independent request review -> scope/match gate -> tool -> report."""
     row = {'question': question, 'report_kind': 'deterministic_template'}
     try:
         request = interpret_scenario(lm, question)
         row['request'] = request
-        if request['family'] == 'unsupported':
-            return dict(row, status='abstained', report='This simulator supports normal and exponential sampling only.')
-        result = coverage_tool(request['family'], request['n'])
-        return dict(row, status='completed', tool_result=result, report=report_simulation(result))
+        row['confirmed_request'] = deepcopy(confirmed_request)
+        return dict(row, **execute_confirmed(request, confirmed_request))
     except (ValueError, TypeError) as error:
         return dict(row, status='invalid', error=str(error))
