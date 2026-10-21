@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).parent / "_ext"))
 
-project = "STAT XXXX Generative AI"
+project = "Generative AI"
 author = "Chi-Kuang Yeh"
 copyright_year = "2026"
 copyright = f"{copyright_year}, {author}"
@@ -28,7 +28,7 @@ templates_path = ["_templates"]
 html_baseurl = "https://chikuang.github.io/teaching/genai/"
 html_context = {
     "default_mode": "auto",
-    "course_pdf": "STAT-XXXX-Generative-AI.pdf",
+    "course_pdf": "Generative-AI.pdf",
     "copyright_year": copyright_year,
     "author_url": "https://chikuang.github.io/",
 }
@@ -48,9 +48,9 @@ html_theme_options = {
     "show_toc_level": 2,
     "navigation_depth": 3,
     "home_page_in_toc": True,
-    "logo": {"text": "STAT XXXX Generative AI"},
+    "logo": {"text": project},
     "footer_content_items": ["copyright.html", "last-updated.html", "extra-footer.html"],
-    "extra_footer": "STAT XXXX Generative AI",
+    "extra_footer": project,
 }
 html_show_sourcelink = True
 html_show_sphinx = False
@@ -65,7 +65,7 @@ html_copy_source = True
 
 # The same chapter tree and executed examples form the downloadable course book.
 latex_engine = "xelatex"
-latex_documents = [("index", "STAT-XXXX-Generative-AI.tex", project, author, "manual", True)]
+latex_documents = [("index", "Generative-AI.tex", project, author, "manual", True)]
 latex_show_urls = "footnote"
 latex_show_pagerefs = True
 latex_domain_indices = False
@@ -89,8 +89,8 @@ latex_elements = {
 % Long appendix section names collide with page numbers in Sphinx's default footer.
 \fancypagestyle{normal}{
   \fancyhf{}
-  \fancyhead[R]{\small\sffamily STAT XXXX Generative AI}
-  \fancyfoot[L]{\small\sffamily Teaching GenAI}
+  \fancyhead[R]{\small\sffamily Generative AI}
+  \fancyfoot[L]{\small\sffamily Generative AI}
   \fancyfoot[R]{\small\sffamily\thepage}
   \renewcommand{\headrulewidth}{0.4pt}
   \renewcommand{\footrulewidth}{0.4pt}

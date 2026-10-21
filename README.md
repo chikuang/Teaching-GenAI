@@ -1,10 +1,10 @@
-# STAT XXXX Generative AI
+# Generative AI
 
 **Topic Course · Generative AI through the lens of statisticians**  
 Chi-Kuang Yeh · Independent study · Python
 
 - [Course website](https://chikuang.github.io/teaching/genai/)
-- [Download course PDF](https://chikuang.github.io/teaching/genai/STAT-XXXX-Generative-AI.pdf)
+- [Download course PDF](https://chikuang.github.io/teaching/genai/Generative-AI.pdf)
 - [Complete Chapter 1](https://chikuang.github.io/teaching/genai/chapters/01-probability-to-genai.html)
 - [14-chapter course guide](https://chikuang.github.io/teaching/genai/syllabus.html)
 - [Python setup and authoring guide](https://chikuang.github.io/teaching/genai/python-workflow.html)
@@ -68,7 +68,7 @@ same chapter tree. MyST-NB caches successful notebook executions so both formats
 use the same outputs; changed notebook content is executed again. The build fails
 on notebook errors, Sphinx warnings, or a LaTeX compilation error and writes `_build/html/`.
 
-The PDF is `_build/html/STAT-XXXX-Generative-AI.pdf`. It includes a linked contents
+The PDF is `_build/html/Generative-AI.pdf`. It includes a linked contents
 page, formulas, code, executed outputs, and figures. To regenerate only the PDF:
 
 ```bash
