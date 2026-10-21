@@ -1,4 +1,4 @@
-"""Fold source code in HTML while keeping outputs and the PDF unchanged."""
+"""Fold HTML source code and identify its visible outputs."""
 from docutils import nodes
 from sphinx.transforms.post_transforms import SphinxPostTransform
 
@@ -8,6 +8,10 @@ class FoldCode(SphinxPostTransform):
     formats = ("html",)
 
     def run(self, **kwargs):
+        for output in self.document.findall(nodes.container):
+            if "cell_output" in output.get("classes", []) and output.children:
+                output.insert(0, nodes.paragraph("", "Output", classes=["course-output-label"]))
+
         for block in list(self.document.findall(nodes.literal_block)):
             ancestor = block.parent
             while ancestor is not None:
@@ -28,4 +32,4 @@ class FoldCode(SphinxPostTransform):
 
 def setup(app):
     app.add_post_transform(FoldCode)
-    return {"version": "1.0", "parallel_read_safe": True, "parallel_write_safe": True}
+    return {"version": "1.1", "parallel_read_safe": True, "parallel_write_safe": True}
