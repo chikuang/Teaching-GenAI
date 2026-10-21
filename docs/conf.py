@@ -8,7 +8,7 @@ project = "STAT XXXX Generative AI"
 author = "Chi-Kuang Yeh"
 copyright_year = "2026"
 copyright = f"{copyright_year}, {author}"
-extensions = ["myst_nb", "sphinx_copybutton", "sphinx_design", "code_folding"]
+extensions = ["myst_nb", "sphinx_copybutton", "sphinx_design", "code_folding", "chapter_equations"]
 exclude_patterns = ["_build", "notebooks"]
 master_doc = "index"
 language = "en"
@@ -55,7 +55,7 @@ html_show_sourcelink = True
 html_show_sphinx = False
 html_last_updated_fmt = "%B %d, %Y"
 numfig = True
-# Number only labeled equations, continuously across the course in both formats.
+# The chapter_equations extension gives labeled equations chapter-local numbers.
 math_numfig = True
 math_number_all = False
 numfig_secnum_depth = 0
@@ -81,6 +81,7 @@ latex_elements = {
     "preamble": r"""
 \setcounter{secnumdepth}{-1}
 \setcounter{tocdepth}{1}
+% Keep internal equation anchors unique; chapter_equations sets printed numbers.
 \counterwithout{equation}{chapter}
 \fvset{fontsize=\small}
 \setlength{\emergencystretch}{3em}

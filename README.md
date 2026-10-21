@@ -98,7 +98,9 @@ outputs and plots stay visible. The PDF and downloaded notebooks retain all code
 Give equations that are discussed later a descriptive MyST label on the closing
 delimiter, such as `$$ (eq-attention)`, and refer to them using
 `Equation {eq}` followed by the label in backticks. HTML and PDF number labeled
-equations continuously across the course; leave one-off expressions unnumbered.
+equations within each course chapter, such as `(10.1)` and `(10.2)` in Chapter 10;
+leave one-off expressions unnumbered. Chapter numbers follow the numbered
+`docs/chapters/` filenames, so course-guide pages do not shift the equation numbers.
 The notebook exporter converts equation references to numbered links to the
 course website and removes MyST label syntax from displayed math.
 
