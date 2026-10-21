@@ -92,8 +92,10 @@ downloaded notebook with `python -m jupyterlab`.
 New executable MyST lessons are discovered automatically by the build script.
 Add their paths to the homepage's toctree to include them in the sidebar.
 
-HTML code blocks are folded by default. Click **Code** (or focus it and press
-Enter/Space) to expand or collapse a block. `docs/_ext/code_folding.py` applies
+HTML code blocks start folded on every page visit or reload. Click **Code** (or
+focus it and press Enter/Space) to expand or collapse a block, or use **Show all
+code** to expand the current page. Expansion is not remembered across visits.
+`docs/_ext/code_folding.py` applies
 this to executable inputs and ordinary fenced code throughout the course. Expanded
 code has a light pink background; outputs and plots stay visible in a light yellow
 panel labeled **Output**. Both colors adapt to dark mode. The PDF and downloaded
