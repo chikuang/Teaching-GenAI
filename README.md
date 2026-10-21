@@ -18,7 +18,7 @@ The chapters also contain 33 numbered worked examples that connect concrete
 scenarios and calculations to the definitions, formulas, and executable labs.
 The core labs run on a CPU with NumPy and PyTorch, without API keys or downloaded
 model weights. RAG and agent chapters include explicit offline baselines and
-separately describe language-model integration extensions. The capstone implements
+link to the actual local-model RAG and agent implementations in Appendix B. The capstone implements
 and evaluates a bounded statistical simulation assistant.
 
 Every chapter includes a workflow or architecture diagram and a table of component
@@ -42,7 +42,7 @@ readable system fonts, Waterloo yellow, and Mathematics pink accents. `docs/` co
 Python cells are executed during rendering. Quarto and Node.js are not required
 to build the site. The earlier Quarto version is preserved in Git history.
 
-Use Python 3.12 and a TeX installation providing `xelatex` and `latexmk`.
+Use Python 3.12. HTML-only builds do not need TeX; full/PDF builds additionally require `xelatex` and `latexmk`.
 MacTeX on macOS or TeX Live on Linux provides the PDF typesetting tools. On
 Ubuntu, install `latexmk texlive-xetex texlive-latex-extra texlive-fonts-recommended fonts-freefont-otf`.
 
@@ -58,7 +58,7 @@ python -m http.server 8767 --directory _build/html
 
 Open `http://localhost:8767`. Windows users can create the environment with
 `py -3.12 -m venv .venv` and activate it with `.venv\Scripts\Activate.ps1`.
-`requirements-lock.txt` records package versions from the tested macOS/Python 3.13
+`requirements-lock.txt` records package versions from the tested macOS/Python 3.12
 environment; CI also builds the course with Python 3.12 on Linux. Use
 `requirements.txt` for portable installation. The Linux workflow installs CPU-only
 PyTorch before the other dependencies to avoid unnecessary CUDA packages.
@@ -143,3 +143,29 @@ The Teaching entry is maintained in `chikuang/website`.
 
 The GitHub Actions workflow installs TeX, validates both HTML and PDF, and saves a build artifact;
 it does not publish automatically into the separate website repository.
+
+
+## Revised learning and validation routes
+
+- Appendix A: executable Python/PyTorch micro-lessons, from indexing to gradient updates and transformer tensor shapes.
+- Chapters 5–6: the identical tiny decoder continues into validation-selected language-model training and decoding with explicit stop reasons.
+- Appendix B: a real local Qwen instruction model, TF-IDF RAG, validated LLM-selected tools, and natural-language statistical simulation. Both a 0.5B pilot and a 1.5B development follow-up are published, including failures.
+- Exercises: questions and answers are separated, with a coding/experiment task and acceptance checks in every chapter.
+- Validation: analytic normal-family coverage, an exact-t control, stronger Chapter 2 basis baseline, and paired outcomes with both gains and losses.
+
+```bash
+python scripts/build.py --format html   # no TeX required
+python scripts/build.py                 # synchronized HTML and PDF
+python -m unittest discover -s tests -v
+python scripts/check_site.py
+```
+
+Optional actual-model execution (about 3 GB of weights; CPU float32 inference needs several GB of RAM):
+
+```bash
+python -m pip install -r requirements-llm.txt
+python labs/download_model.py
+python labs/llm_lab.py --model-dir _models/qwen2.5-1.5b --output .runs/my-llm-run.json
+```
+
+The ordinary build reanalyzes the saved model trace; it never substitutes replay for a requested live call. Downloaded weights and personal runs are ignored by Git. `docs/_static/experiments/` contains only intentionally published, course-authored traces. The larger model was selected after inspecting the pilot, so these are development comparisons, not untouched test estimates.

@@ -1,4 +1,6 @@
 .venv/
+_models/
+.runs/
 _build/
 docs/notebooks/
 .quarto/

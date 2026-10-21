@@ -1,0 +1,4 @@
+# Optional local pretrained-model lab; install after requirements.txt.
+transformers==4.57.1
+huggingface-hub>=0.34,<1
+safetensors>=0.4,<1

@@ -25,6 +25,11 @@ def notebook_examples(markdown):
         lines = [f"**{title}**", "", *body.strip().splitlines()]
         return "\n".join("> " + line if line else ">" for line in lines)
 
+    markdown = re.sub(r"(?ms)^```\{tabularcolumns\}[^\n]*\n.*?^```[ \t]*\n?", "", markdown)
+    # Jupyter understands HTML disclosure widgets, not Sphinx dropdown directives.
+    markdown = re.sub(
+        r"(?ms)^:::\{dropdown\} ([^\n]+)\n(?:\n|:[^\n]*\n)*(.*?)\n:::[ \t]*$",
+        lambda m: "<details><summary>" + m[1] + "</summary>\n\n" + m[2].strip() + "\n\n</details>", markdown)
     return re.sub(
         r"(?ms)^:::\{admonition\} (Example [^\n]+)\n"
         r"((?::[^\n]*\n)+)\n(.*?)\n:::[ \t]*$",
@@ -34,11 +39,12 @@ def notebook_examples(markdown):
 
 def main():
     parser = argparse.ArgumentParser(description="Build the course website and downloadable PDF.")
-    parser.add_argument("--format", choices=["all", "pdf"], default="all",
-                        help="Build both formats (default), or PDF only.")
+    parser.add_argument("--format", choices=["all", "html", "pdf"], default="all",
+                        help="Build both formats (default), HTML without TeX, or PDF only.")
     args = parser.parse_args()
     make_pdf = args.format in {"all", "pdf"}
-    make_html = args.format == "all"
+    make_html = args.format in {"all", "html"}
+    os.environ["GENAI_COURSE_ROOT"] = str(ROOT)
     if make_pdf:
         missing = [tool for tool in ("xelatex", "latexmk") if shutil.which(tool) is None]
         if missing:
@@ -50,6 +56,18 @@ def main():
         path = BUILD / folder
         path.mkdir(parents=True, exist_ok=True)
         os.environ.setdefault(variable, str(path))
+    # External experiment records are inputs to Appendix B: do not reuse stale outputs.
+    experiment_cache = BUILD / ".jupyter_cache"
+    record = DOCS / "_static" / "experiments" / "llm-run.json"
+    if record.exists():
+        import hashlib
+        digest = hashlib.sha256(b"".join(p.read_bytes() for p in sorted(record.parent.glob("*.json")))).hexdigest()
+        stamp = BUILD / "experiment.sha256"
+        if not stamp.exists() or stamp.read_text() != digest:
+            if experiment_cache.exists():
+                shutil.rmtree(experiment_cache)
+            BUILD.mkdir(exist_ok=True)
+            stamp.write_text(digest)
     from sphinx.cmd.build import build_main
     from myst_nb.core.read import read_myst_markdown_notebook
     import nbformat
@@ -76,7 +94,8 @@ def main():
 
     def render(builder, destination):
         status = build_main(["-b", builder, "-d", str(BUILD / "doctrees"),
-                             "-E", "-a", "-W", "--keep-going", str(DOCS), str(destination)])
+                             "-E", "-a", "-W", "--keep-going",
+                             "-A", f"course_has_pdf={int(make_pdf)}", str(DOCS), str(destination)])
         if status:
             raise SystemExit(status)
 

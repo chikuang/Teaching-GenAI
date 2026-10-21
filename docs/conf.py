@@ -23,6 +23,7 @@ html_theme = "sphinx_book_theme"
 html_title = project
 html_static_path = ["_static"]
 html_css_files = ["course.css"]
+html_js_files = ["learning-controls.js"]
 templates_path = ["_templates"]
 html_baseurl = "https://chikuang.github.io/teaching/genai/"
 html_context = {
@@ -85,5 +86,14 @@ latex_elements = {
 \counterwithout{equation}{chapter}
 \fvset{fontsize=\small}
 \setlength{\emergencystretch}{3em}
+% Long appendix section names collide with page numbers in Sphinx's default footer.
+\fancypagestyle{normal}{
+  \fancyhf{}
+  \fancyhead[R]{\small\sffamily STAT XXXX Generative AI}
+  \fancyfoot[L]{\small\sffamily Teaching GenAI}
+  \fancyfoot[R]{\small\sffamily\thepage}
+  \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+}
 """,
 }
