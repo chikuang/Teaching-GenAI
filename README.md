@@ -21,7 +21,7 @@ and evaluates a bounded statistical simulation assistant.
 
 ## Build the website and course PDF
 
-The site uses **Sphinx + MyST-NB + sphinx-book-theme**, with white backgrounds,
+The site uses **Sphinx + MyST-NB + sphinx-book-theme**, with light, dark, and system-following themes,
 readable system fonts, Waterloo yellow, and Mathematics pink accents. `docs/` contains the canonical sources;
 Python cells are executed during rendering. Quarto and Node.js are not required
 to build the site. The earlier Quarto version is preserved in Git history.

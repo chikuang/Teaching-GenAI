@@ -19,13 +19,13 @@ html_static_path = ["_static"]
 html_css_files = ["course.css"]
 templates_path = ["_templates"]
 html_baseurl = "https://chikuang.github.io/teaching/genai/"
-html_context = {"default_mode": "light", "course_pdf": "STAT-XXXX-Generative-AI.pdf"}
+html_context = {"default_mode": "auto", "course_pdf": "STAT-XXXX-Generative-AI.pdf"}
 html_theme_options = {
     # The book theme has its own header; avoid duplicate mobile toggle buttons.
     "navbar_persistent": [],
     "article_header_end": ["course-pdf-button.html", "article-header-buttons.html"],
     "pygments_light_style": "friendly",
-    "pygments_dark_style": "friendly",
+    "pygments_dark_style": "monokai",
     "repository_url": "https://github.com/chikuang/Teaching-GenAI",
     "repository_branch": "main",
     "path_to_docs": "docs",
