@@ -80,6 +80,7 @@ class CourseContinuity(unittest.TestCase):
         spec.loader.exec_module(builder)
         sample = '```{tabularcolumns} \\X{1}{2}\n```\n\n:::{dropdown} Solution\n\nUse a held-out sample.\n:::\n'
         exported = builder.notebook_examples(sample)
+        self.assertEqual(builder.notebook_examples('```{raw} latex\n\\clearpage\n```\n'), '')
         self.assertNotIn('{tabularcolumns}', exported)
         self.assertNotIn('{dropdown}', exported)
         self.assertIn('<details>', exported)

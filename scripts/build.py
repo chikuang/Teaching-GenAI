@@ -26,6 +26,8 @@ def notebook_examples(markdown):
         return "\n".join("> " + line if line else ">" for line in lines)
 
     markdown = re.sub(r"(?ms)^```\{tabularcolumns\}[^\n]*\n.*?^```[ \t]*\n?", "", markdown)
+    # Print-only page breaks have no meaning in an ordinary Jupyter notebook.
+    markdown = re.sub(r"(?ms)^```\{raw\} latex[ \t]*\n.*?^```[ \t]*\n?", "", markdown)
     # Jupyter understands HTML disclosure widgets, not Sphinx dropdown directives.
     markdown = re.sub(
         r"(?ms)^:::\{dropdown\} ([^\n]+)\n(?:\n|:[^\n]*\n)*(.*?)\n:::[ \t]*$",

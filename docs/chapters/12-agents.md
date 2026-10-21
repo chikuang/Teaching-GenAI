@@ -198,6 +198,10 @@ assert len(result['trace']) == 2
 
 The trace records observable actions and returned data. It does not require a generated chain of thought or claim that natural-language reasoning faithfully exposes internal computation. In this implementation, one iteration is reserved for the final decision, so a budget of two iterations allows the two tool calls but not the finish proposal.
 
+```{raw} latex
+\clearpage
+```
+
 :::{admonition} Example 12.3 · Two tool calls require three policy decisions
 :class: course-example
 :name: ex-agent-trace-budget
