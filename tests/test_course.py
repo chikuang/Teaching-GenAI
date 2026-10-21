@@ -99,7 +99,7 @@ class CourseContinuity(unittest.TestCase):
         record = json.loads((ROOT/'docs/_static/experiments/llm-run.json').read_text())
         import hashlib
         self.assertEqual(record['model'], lab.MODEL)
-        self.assertEqual(record['protocol']['runner_sha256'], hashlib.sha256((ROOT/'labs/llm_lab.py').read_bytes()).hexdigest())
+        self.assertEqual(record['protocol']['runner_sha256'], hashlib.sha256((ROOT/'labs/archived-v1/llm_lab.py').read_bytes()).hexdigest())
         self.assertEqual(record['protocol']['task_hash'], lab.digest([lab.DOCUMENTS, lab.RAG_TASKS, lab.AGENT_TASKS, lab.CAPSTONE_TASKS]))
         ids = [i for section in ['rag', 'agents', 'capstone'] for row in record[section] for i in row['call_ids']]
         self.assertEqual(sorted(ids), list(range(len(record['calls']))))

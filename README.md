@@ -169,3 +169,23 @@ python labs/llm_lab.py --model-dir _models/qwen2.5-1.5b --output .runs/my-llm-ru
 ```
 
 The ordinary build reanalyzes the saved model trace; it never substitutes replay for a requested live call. Downloaded weights and personal runs are ignored by Git. `docs/_static/experiments/` contains only intentionally published, course-authored traces. The larger model was selected after inspecting the pilot, so these are development comparisons, not untouched test estimates.
+
+
+## Guided revision: learn by crossing one boundary at a time
+
+[Appendix C](https://chikuang.github.io/teaching/genai/appendices/c-guided-live-labs.html)
+links four executed live notebooks. Their editable sources are in `labs/notebooks/`;
+each loads the pinned local model from a fresh kernel. Published executed copies are
+under `docs/_static/live-notebooks/`, with raw call records in
+`docs/_static/experiments/`. Ordinary rendering executes 18 teaching/analysis
+notebooks and validates four saved live notebooks; it never claims a replay is new
+inference. These are authored development demonstrations, including failures.
+
+- Read Appendix A.5–A.7 **before Chapter 2**, A.8 before Chapter 5, and A.9/A.11 before shared RAG and agent labs.
+- The Chapter 10 RAG contract lives in `labs/contracts.py`; its same-corpus pipeline is in `labs/rag_core.py`. Tests check continuity with the chapter.
+- `labs/guided_systems.py` supplies the shared bounded action loop and the LLM-interpreter/validated-tool/template-report workflow.
+- All 14 chapters now have predict/implement/extend practice with executable reference fixtures. Chapters 3, 6, 8 and 9 include complete experiment scaffolds.
+- Chapter 7 diagnoses distances and neighborhood mass as well as region occupancy; Chapter 13 includes the complete one/three-call by cache-off/on factorial.
+- Earlier outputs remain historical. `labs/archived-v1/` retains the v1 runner bytes, and `labs/archived-guided-initial/` retains the first guided-run code. Reproduce their original layout through Git history; do not execute archival modules as a current supported entry point.
+
+The public HTML/PDF keep the Waterloo black/yellow and Mathematics pink theme.

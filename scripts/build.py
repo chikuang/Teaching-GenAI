@@ -63,7 +63,8 @@ def main():
     record = DOCS / "_static" / "experiments" / "llm-run.json"
     if record.exists():
         import hashlib
-        digest = hashlib.sha256(b"".join(p.read_bytes() for p in sorted(record.parent.glob("*.json")))).hexdigest()
+        external_inputs = sorted(record.parent.glob("*.json")) + sorted((ROOT / "labs").glob("*.py"))
+        digest = hashlib.sha256(b"".join(p.read_bytes() for p in external_inputs)).hexdigest()
         stamp = BUILD / "experiment.sha256"
         if not stamp.exists() or stamp.read_text() != digest:
             if experiment_cache.exists():
@@ -149,6 +150,13 @@ def main():
             opening, href, closing = match.groups()
             if not urlsplit(href).scheme and not href.startswith("#"):
                 href = urljoin(page_url, re.sub(r"\.md(?=#|$)", ".html", href))
+                # MyST heading slugs differ from the actual HTML element IDs.
+                parsed = urlsplit(href)
+                prefix = "/teaching/genai/"
+                docname = parsed.path.removeprefix(prefix).removesuffix(".html")
+                slug = environment.metadata.get(docname, {}).get("myst_slugs", {}).get(parsed.fragment)
+                if slug:
+                    href = href.rsplit("#", 1)[0] + "#" + slug[1]
             return opening + href + closing
         for cell in notebook.cells:
             if cell.cell_type == "markdown":
@@ -159,6 +167,9 @@ def main():
                 cell.source = notebook_examples(cell.source)
         nbformat.write(notebook, target)
     shutil.copytree(downloads, OUTPUT / "notebooks", dirs_exist_ok=True)
+    # Live notebooks are downloadable artifacts, excluded from Sphinx source discovery.
+    shutil.copytree(DOCS / "_static" / "live-notebooks",
+                    OUTPUT / "_static" / "live-notebooks", dirs_exist_ok=True)
     (OUTPUT / ".nojekyll").touch()
     print(f"\nBuilt course output: {OUTPUT}")
     if make_pdf:

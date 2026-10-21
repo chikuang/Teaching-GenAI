@@ -14,6 +14,11 @@ import re
 import statistics
 import time
 from datetime import datetime, timezone
+import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from labs.contracts import parse_object, assess_response
 
 ROOT = Path(__file__).resolve().parents[1]
 MODEL = json.loads((Path(__file__).with_name('model.json')).read_text())
@@ -49,15 +54,6 @@ CAPSTONE_TASKS = [
 
 def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()
-
-
-def parse_object(raw):
-    def invalid_constant(value):
-        raise ValueError('Nonfinite JSON constant: ' + value)
-    result = json.loads(raw, parse_constant=invalid_constant)
-    if not isinstance(result, dict):
-        raise ValueError('Expected a JSON object')
-    return result
 
 
 def keys(obj, required):
@@ -146,25 +142,17 @@ def rag_experiment(lm):
             row = {'task': task['id'], 'condition': condition,
                    'contexts': [d['id'] for d in contexts], 'call_ids': [before],
                    'valid': False, 'success': False, 'error': None}
-            try:
-                answer = parse_object(raw)
-                keys(answer, ['answer', 'citations', 'abstain'])
-                if not isinstance(answer['answer'], str) or type(answer['abstain']) is not bool:
-                    raise ValueError('Wrong answer/abstain types')
-                cites = answer['citations']
-                if not isinstance(cites, list) or any(not isinstance(c, str) or c not in row['contexts'] for c in cites):
-                    raise ValueError('Citations must identify supplied passages')
-                if answer['abstain'] and cites:
-                    raise ValueError('Abstention must have no citations')
-                row.update(valid=True, parsed=answer)
+            assessment = assess_response(raw, contexts)
+            row.update(assessment)
+            row['valid'] = assessment['contract_valid']  # legacy column alias
+            if row['contract_valid']:
+                answer = row['parsed']
                 if task['source'] is None:
                     row['success'] = answer['abstain']
                 else:
-                    # Declared narrow rubric; not general semantic factuality scoring.
-                    row['success'] = (not answer['abstain'] and task['source'] in cites
+                    # Narrow keyword/source rubric; semantic support remains unscored.
+                    row['success'] = (not answer['abstain'] and task['source'] in answer['citations']
                                       and all(word in answer['answer'].lower() for word in task['gold']))
-            except (ValueError, TypeError) as error:
-                row['error'] = str(error)
             rows.append(row)
             print('RAG', task['id'], condition, row['success'], flush=True)
     return rows
@@ -353,10 +341,10 @@ def capstone_experiment(lm):
 
 def run(model_dir, output):
     lm = LocalLM(model_dir)
-    record = {'schema_version': 1, 'created_utc': datetime.now(timezone.utc).isoformat(),
+    record = {'schema_version': 2, 'created_utc': datetime.now(timezone.utc).isoformat(),
               'model': MODEL, 'runtime': lm.versions,
               'protocol': {'decoding': 'greedy', 'seed': 2026, 'agent_decision_limit': 4,
-                           'repetitions_per_task': 1, 'development': 'The 0.5B pilot was inspected before selecting this 1.5B follow-up. Prompts, questions, and strict validators were kept fixed. This is a development comparison, not an untouched model-selection test.',
+                           'repetitions_per_task': 1, 'development': 'Revision 2 shares the Chapter 10 RAG contract. Historical v1 traces retain their original validator and runner in labs/archived-v1; do not pool their validity rates with this run. This remains a development experiment.',
                            'task_hash': digest([DOCUMENTS, RAG_TASKS, AGENT_TASKS, CAPSTONE_TASKS]),
                            'runner_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest()},
               'documents': DOCUMENTS, 'rag_tasks': RAG_TASKS, 'agent_tasks': AGENT_TASKS,
